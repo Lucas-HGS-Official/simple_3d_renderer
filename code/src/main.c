@@ -3,6 +3,10 @@
 #include <SDL2/SDL.h>
 
 bool initialize_window(SDL_Window* window, SDL_Renderer* renderer);
+void setup(void);
+void process_input(void);
+void update(void);
+void render(void);
 
 int main(int argc, char const *argv[]) {
     bool isRunning = false;
@@ -11,6 +15,14 @@ int main(int argc, char const *argv[]) {
     SDL_Renderer* renderer = NULL;
 
     isRunning = initialize_window(window, renderer);
+
+    setup();
+
+    while (isRunning) {
+        process_input();
+        update();
+        render();
+    }
 
     return 0;
 }
@@ -42,4 +54,20 @@ bool initialize_window(SDL_Window* window, SDL_Renderer* renderer) {
     }
 
     return true;
+}
+
+void setup() {
+
+}
+
+void process_input() {
+
+}
+
+void update() {
+
+}
+
+void render() {
+
 }
