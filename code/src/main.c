@@ -4,7 +4,7 @@
 
 bool initialize_window(SDL_Window* window, SDL_Renderer* renderer);
 void setup(void);
-void process_input(void);
+void process_input(bool* isRunning);
 void update(void);
 void render(void);
 
@@ -19,7 +19,7 @@ int main(int argc, char const *argv[]) {
     setup();
 
     while (isRunning) {
-        process_input();
+        process_input(&isRunning);
         update();
         render();
     }
@@ -60,8 +60,21 @@ void setup() {
 
 }
 
-void process_input() {
+void process_input(bool* isRunning) {
+    SDL_Event event;
+    SDL_PollEvent(&event);
 
+    switch (event.type) {
+    case SDL_QUIT:
+        *isRunning = false;
+        break;
+    case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_ESCAPE)
+            *isRunning = false;
+        break;
+    default:
+        break;
+    }
 }
 
 void update() {
