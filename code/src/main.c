@@ -2,19 +2,19 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
-bool initialize_window(SDL_Window* window, SDL_Renderer* renderer);
+SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
+
+bool initialize_window();
 void setup(void);
 void process_input(bool* isRunning);
 void update(void);
-void render(void);
+void render();
 
 int main(int argc, char const *argv[]) {
     bool isRunning = false;
 
-    SDL_Window* window = NULL;
-    SDL_Renderer* renderer = NULL;
-
-    isRunning = initialize_window(window, renderer);
+    isRunning = initialize_window();
 
     setup();
 
@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
-bool initialize_window(SDL_Window* window, SDL_Renderer* renderer) {
+bool initialize_window() {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         fprintf(stderr, "Error initializing SDL.\n");
         
@@ -82,5 +82,8 @@ void update() {
 }
 
 void render() {
+    SDL_SetRenderDrawColor(renderer, 46, 136, 87, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(renderer);
 
+    SDL_RenderPresent(renderer);
 }
