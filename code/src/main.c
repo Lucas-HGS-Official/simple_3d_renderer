@@ -1,15 +1,22 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
+uint32_t* colorBuffer = NULL;
+
+int windowWidth = 800;
+int windowHeight = 600;
+
 bool initialize_window();
 void setup(void);
 void process_input(bool* isRunning);
 void update(void);
 void render();
+void destroy_window(void);
 
 int main(int argc, char const *argv[]) {
     bool isRunning = false;
@@ -24,6 +31,8 @@ int main(int argc, char const *argv[]) {
         render();
     }
 
+    destroy_window();
+
     return 0;
 }
 
@@ -37,7 +46,7 @@ bool initialize_window() {
     window = SDL_CreateWindow(
         NULL,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        800, 600,
+        windowWidth, windowHeight,
         SDL_WINDOW_BORDERLESS
     );
     if(!window) {
@@ -57,7 +66,7 @@ bool initialize_window() {
 }
 
 void setup() {
-
+    colorBuffer = (uint32_t*) malloc(sizeof(uint32_t) * windowWidth * windowHeight);
 }
 
 void process_input(bool* isRunning) {
@@ -86,4 +95,11 @@ void render() {
     SDL_RenderClear(renderer);
 
     SDL_RenderPresent(renderer);
+}
+
+void destroy_window() {
+    free(colorBuffer);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
