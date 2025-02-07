@@ -15,7 +15,8 @@ bool initialize_window();
 void setup(void);
 void process_input(bool* isRunning);
 void update(void);
-void render();
+void clearColorBuffer(uint32_t color);
+void render(void);
 void destroy_window(void);
 
 int main(int argc, char const *argv[]) {
@@ -90,9 +91,19 @@ void update() {
 
 }
 
+void clearColorBuffer(uint32_t color) {
+    for (int y = 0; y < windowHeight; y++){
+        for (int x = 0; x < windowWidth; x++) {
+            colorBuffer[(windowWidth * y) + x] = color;
+        }
+    }
+}
+
 void render() {
     SDL_SetRenderDrawColor(renderer, 46, 136, 87, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
+
+    clearColorBuffer(0xFFFF00);
 
     SDL_RenderPresent(renderer);
 }
