@@ -10,29 +10,28 @@ uint32_t* colorBuffer = NULL;
 
 SDL_Texture* colorBufferTexture = NULL;
 
-int windowWidth = 800;
-int windowHeight = 600;
-
-bool initialize_window();
-void setup(void);
+bool initialize_window(int windowWidth, int windowHeight);
+void setup(int windowWidth, int windowHeight);
 void process_input(bool* isRunning);
 void update(void);
-void render_color_buffer(void);
-void clearColorBuffer(uint32_t color);
-void render(void);
+void render_color_buffer(int windowWidth);
+void clearColorBuffer(int windowWidth, int windowHeight, uint32_t color);
+void render(int windowWidth, int windowHeight);
 void destroy_window(void);
 
 int main(int argc, char const *argv[]) {
+    int windowWidth = 800;
+    int windowHeight = 600;
     bool isRunning = false;
 
-    isRunning = initialize_window();
+    isRunning = initialize_window(windowWidth, windowHeight);
 
-    setup();
+    setup(windowWidth, windowHeight);
 
     while (isRunning) {
         process_input(&isRunning);
         update();
-        render();
+        render(windowWidth, windowHeight);
     }
 
     destroy_window();
@@ -40,7 +39,7 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
-bool initialize_window() {
+bool initialize_window(int windowWidth, int windowHeight) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         fprintf(stderr, "Error initializing SDL.\n");
         
@@ -76,7 +75,7 @@ bool initialize_window() {
     return true;
 }
 
-void setup() {
+void setup(int windowWidth, int windowHeight) {
     colorBuffer = (uint32_t*) malloc(sizeof(uint32_t) * windowWidth * windowHeight);
 
     colorBufferTexture = SDL_CreateTexture(
@@ -109,7 +108,7 @@ void update() {
 
 }
 
-void clearColorBuffer(uint32_t color) {
+void clearColorBuffer(int windowWidth, int windowHeight, uint32_t color) {
     for (int y = 0; y < windowHeight; y++){
         for (int x = 0; x < windowWidth; x++) {
             colorBuffer[(windowWidth * y) + x] = color;
@@ -117,7 +116,7 @@ void clearColorBuffer(uint32_t color) {
     }
 }
 
-void render_color_buffer() {
+void render_color_buffer(int windowWidth) {
     SDL_UpdateTexture(
         colorBufferTexture,
         NULL,
@@ -128,12 +127,12 @@ void render_color_buffer() {
     SDL_RenderCopy(renderer, colorBufferTexture, NULL, NULL);
 }
 
-void render() {
+void render(int windowWidth, int windowHeight) {
     SDL_SetRenderDrawColor(renderer, 46, 136, 87, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
-    render_color_buffer();
-    clearColorBuffer(0xFFFF00);
+    render_color_buffer(windowWidth);
+    clearColorBuffer(windowWidth, windowHeight, 0xFFFF00);
 
     SDL_RenderPresent(renderer);
 }
