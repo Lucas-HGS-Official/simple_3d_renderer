@@ -71,6 +71,8 @@ bool initialize_window() {
         return false;
     }
 
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+
     return true;
 }
 
