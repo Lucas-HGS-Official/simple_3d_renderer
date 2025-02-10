@@ -10,6 +10,7 @@ bool initialize_window(int windowWidth, int windowHeight, SDL_Window** window, S
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
 void update(void);
+void drawGrid(int windowWidth, int windowHeight);
 void renderColorBuffer(int windowWidth, SDL_Renderer** renderer);
 void clearColorBuffer(int windowWidth, int windowHeight, uint32_t color);
 void render(int windowWidth, int windowHeight, SDL_Renderer** renderer);
@@ -115,6 +116,16 @@ void clearColorBuffer(int windowWidth, int windowHeight, uint32_t color) {
     }
 }
 
+void drawGrid(int windowWidth, int windowHeight) {
+    for (int y = 0; y < windowHeight; y++) {
+        for (int x = 0; x < windowWidth; x++) {
+            if (x % 10 == 0 || y % 10 == 0) {
+                colorBuffer[(windowWidth * y) + x] = 0xFFFFFFFF;
+            }
+        }
+    }
+}
+
 void renderColorBuffer(int windowWidth, SDL_Renderer** renderer) {
     SDL_UpdateTexture(
         colorBufferTexture,
@@ -130,8 +141,10 @@ void render(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
     SDL_SetRenderDrawColor(*renderer, 46, 136, 87, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(*renderer);
 
+    drawGrid(windowWidth, windowHeight);
+
     renderColorBuffer(windowWidth, renderer);
-    clearColorBuffer(windowWidth, windowHeight, 0xFFFF00);
+    clearColorBuffer(windowWidth, windowHeight, 0xFFFF0000);
 
     SDL_RenderPresent(*renderer);
 }
