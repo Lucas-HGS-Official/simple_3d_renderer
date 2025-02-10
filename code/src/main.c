@@ -2,18 +2,18 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-uint32_t* colorBuffer = NULL;
 
+uint32_t* colorBuffer = NULL;
 SDL_Texture* colorBufferTexture = NULL;
 
 bool initialize_window(int windowWidth, int windowHeight, SDL_Window** window, SDL_Renderer** renderer);
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
-void process_input(bool* isRunning);
+void processInput(bool* isRunning);
 void update(void);
-void render_color_buffer(int windowWidth, SDL_Renderer** renderer);
+void renderColorBuffer(int windowWidth, SDL_Renderer** renderer);
 void clearColorBuffer(int windowWidth, int windowHeight, uint32_t color);
 void render(int windowWidth, int windowHeight, SDL_Renderer** renderer);
-void destroy_window(SDL_Window** window, SDL_Renderer** renderer);
+void destroyWindow(SDL_Window** window, SDL_Renderer** renderer);
 
 int main(int argc, char const *argv[]) {
     SDL_Window* window = NULL;
@@ -28,12 +28,12 @@ int main(int argc, char const *argv[]) {
     setup(windowWidth, windowHeight, &renderer);
 
     while (isRunning) {
-        process_input(&isRunning);
+        processInput(&isRunning);
         update();
         render(windowWidth, windowHeight, &renderer);
     }
 
-    destroy_window(&window, &renderer);
+    destroyWindow(&window, &renderer);
 
     return 0;
 }
@@ -86,7 +86,7 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
     );
 }
 
-void process_input(bool* isRunning) {
+void processInput(bool* isRunning) {
     SDL_Event event;
     SDL_PollEvent(&event);
 
@@ -115,7 +115,7 @@ void clearColorBuffer(int windowWidth, int windowHeight, uint32_t color) {
     }
 }
 
-void render_color_buffer(int windowWidth, SDL_Renderer** renderer) {
+void renderColorBuffer(int windowWidth, SDL_Renderer** renderer) {
     SDL_UpdateTexture(
         colorBufferTexture,
         NULL,
@@ -130,13 +130,13 @@ void render(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
     SDL_SetRenderDrawColor(*renderer, 46, 136, 87, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(*renderer);
 
-    render_color_buffer(windowWidth, renderer);
+    renderColorBuffer(windowWidth, renderer);
     clearColorBuffer(windowWidth, windowHeight, 0xFFFF00);
 
     SDL_RenderPresent(*renderer);
 }
 
-void destroy_window(SDL_Window** window, SDL_Renderer** renderer) {
+void destroyWindow(SDL_Window** window, SDL_Renderer** renderer) {
     free(colorBuffer);
     SDL_DestroyRenderer(*renderer);
     SDL_DestroyWindow(*window);
