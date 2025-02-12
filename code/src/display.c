@@ -1,5 +1,13 @@
 #include "display.h"
 
+window = NULL;
+renderer = NULL;
+windowWidth = 800;
+windowHeight = 600;
+
+colorBuffer = NULL;
+colorBufferTexture = NULL;
+
 bool initializeWindow(void) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         fprintf(stderr, "Error initializing SDL.\n");
@@ -61,6 +69,14 @@ void renderColorBuffer(void) {
     );
 
     SDL_RenderCopy(renderer, colorBufferTexture, NULL, NULL);
+}
+
+void clearColorBuffer(uint32_t color) {
+    for (int y = 0; y < windowHeight; y++){
+        for (int x = 0; x < windowWidth; x++) {
+            colorBuffer[(windowWidth * y) + x] = color;
+        }
+    }
 }
 
 void destroyWindow() {

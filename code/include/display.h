@@ -7,15 +7,19 @@
 #include <SDL2/SDL.h>
 
 
-SDL_Window* window = NULL;
-SDL_Renderer* renderer = NULL;
-int windowWidth = 800;
-int windowHeight = 600;
+extern SDL_Window* window;
+extern SDL_Renderer* renderer;
+extern int windowWidth;
+extern int windowHeight;
+
+extern uint32_t* colorBuffer;
+extern SDL_Texture* colorBufferTexture;
 
 bool initializeWindow(void);
 void drawGrid(void);
 void drawRectFilled(int x, int y, int width, int height, uint32_t color);
 void renderColorBuffer(void);
+void clearColorBuffer(uint32_t color);
 void destroyWindow(void);
 
 #endif
