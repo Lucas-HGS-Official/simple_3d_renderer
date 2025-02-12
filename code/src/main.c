@@ -6,7 +6,7 @@
 uint32_t* colorBuffer = NULL;
 SDL_Texture* colorBufferTexture = NULL;
 
-bool initialize_window(int windowWidth, int windowHeight, SDL_Window** window, SDL_Renderer** renderer);
+bool initializeWindow(int windowWidth, int windowHeight, SDL_Window** window, SDL_Renderer** renderer);
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
 void update(void);
@@ -25,7 +25,7 @@ int main(int argc, char const *argv[]) {
     int windowHeight = 600;
     bool isRunning = false;
 
-    isRunning = initialize_window(windowWidth, windowHeight, &window, &renderer);
+    isRunning = initializeWindow(windowWidth, windowHeight, &window, &renderer);
 
     setup(windowWidth, windowHeight, &renderer);
 
@@ -40,7 +40,7 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
-bool initialize_window(int windowWidth, int windowHeight, SDL_Window** window, SDL_Renderer** renderer) {
+bool initializeWindow(int windowWidth, int windowHeight, SDL_Window** window, SDL_Renderer** renderer) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         fprintf(stderr, "Error initializing SDL.\n");
         
