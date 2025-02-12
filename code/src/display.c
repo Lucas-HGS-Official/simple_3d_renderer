@@ -39,6 +39,12 @@ bool initializeWindow(void) {
     return true;
 }
 
+void drawPixel(int x, int y, uint32_t color) {
+    if (x < windowWidth && y < windowHeight){
+        colorBuffer[(windowWidth * y) + x] = color;
+    }
+}
+
 void drawGrid(void) {
     for (int y = 0; y < windowHeight; y++) {
         for (int x = 0; x < windowWidth; x++) {

@@ -66,6 +66,7 @@ void render() {
 
     drawGrid();
     drawRectFilled(300, 200, 300, 150, 0xFFFF00FF);
+    drawPixel(20, 20, 0xFFFF00FF);
 
     renderColorBuffer();
     clearColorBuffer(0xFFFF0000);

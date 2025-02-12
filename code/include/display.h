@@ -16,6 +16,7 @@ extern uint32_t* colorBuffer;
 extern SDL_Texture* colorBufferTexture;
 
 bool initializeWindow(void);
+void drawPixel(int x, int y, uint32_t color);
 void drawGrid(void);
 void drawRectFilled(int x, int y, int width, int height, uint32_t color);
 void renderColorBuffer(void);
