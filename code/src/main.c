@@ -5,6 +5,9 @@
 #include "display.h"
 #include "vector.h"
 
+const int N_POINTS = 9 * 9 * 9;
+vec3_t cubePoints[N_POINTS];
+
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
 void update(void);
@@ -38,6 +41,17 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
         windowWidth,
         windowHeight
     );
+
+    int pCount = 0;
+
+    for (float x = -1; x <= 1; x += 0.25) {
+        for (float y = -1; y <= 1; y += 0.25) {
+            for (float z = -1; z <= 1; z += 0.25) {
+                vec3_t newPoint = { x, y, z };
+                cubePoints[pCount++] = newPoint;
+            }
+        }
+    }
 }
 
 void processInput(bool* isRunning) {
