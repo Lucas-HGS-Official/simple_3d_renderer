@@ -40,7 +40,7 @@ bool initializeWindow(void) {
 }
 
 void drawPixel(int x, int y, uint32_t color) {
-    if (x < windowWidth && y < windowHeight){
+    if (x > 0 && x < windowWidth && y > 0 && y < windowHeight){
         colorBuffer[(windowWidth * y) + x] = color;
     }
 }
