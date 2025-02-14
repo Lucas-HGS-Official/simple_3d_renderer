@@ -5,7 +5,7 @@
 #include "display.h"
 #include "vector.h"
 
-const int N_POINTS = 9 * 9 * 9;
+#define N_POINTS (9 * 9 * 9)
 vec3_t cubePoints[N_POINTS];
 
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
