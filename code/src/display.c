@@ -61,7 +61,8 @@ void drawRectFilled(int x, int y, int width, int height, uint32_t color) {
         for (int j = 0; j < height; j++) {
             int currentX = x+i;
             int currentY = y+j;
-            colorBuffer[(windowWidth * currentY) + currentX] = color;
+            drawPixel(currentX, currentY, color);
+            //colorBuffer[(windowWidth * currentY) + currentX] = color;
         }
     }
 }
