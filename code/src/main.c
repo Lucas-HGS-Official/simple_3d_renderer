@@ -6,8 +6,10 @@
 #include "vector.h"
 
 #define N_POINTS (9 * 9 * 9)
+
 vec3_t cubePoints[N_POINTS];
 vec2_t projectedPoints[N_POINTS];
+float FOVFactor = 128;
 
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
@@ -75,7 +77,8 @@ void processInput(bool* isRunning) {
 
 vec2_t project(vec3_t point) {
     vec2_t projectedPoint = {
-        point.x, point.y
+        point.x * FOVFactor,
+        point.y * FOVFactor
     };
 
     return projectedPoint;
@@ -96,7 +99,11 @@ void render() {
 
     for (int i=0; i<N_POINTS; i++) {
         vec2_t projectedPoint = projectedPoints[i];
-        drawRectFilled(projectedPoint.x, projectedPoint.y, 4, 4, 0xFFFFFF00);
+        drawRectFilled(
+            projectedPoint.x + (windowWidth / 2),
+            projectedPoint.y + (windowHeight / 2),
+            4, 4,
+            0xFFFFFF00);
     }
 
     renderColorBuffer();
