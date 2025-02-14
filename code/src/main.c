@@ -7,9 +7,11 @@
 
 #define N_POINTS (9 * 9 * 9)
 vec3_t cubePoints[N_POINTS];
+vec2_t projectedPoints[N_POINTS];
 
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
+vec2_t project(vec3_t point);
 void update(void);
 void render();
 
@@ -71,17 +73,31 @@ void processInput(bool* isRunning) {
     }
 }
 
-void update() {
+vec2_t project(vec3_t point) {
+    vec2_t projectedPoint = {
+        point.x, point.y
+    };
 
+    return projectedPoint;
+}
+
+void update() {
+    for (int i = 0; i < N_POINTS; i++) {
+        vec3_t point = cubePoints[i];
+
+        vec2_t projectedPoint = project(point);
+
+        projectedPoints[i] = projectedPoint;
+    }
 }
 
 void render() {
-    SDL_SetRenderDrawColor(renderer, 46, 136, 87, SDL_ALPHA_OPAQUE);
-    SDL_RenderClear(renderer);
-
     drawGrid();
-    drawRectFilled(300, 200, 300, 150, 0xFFFF00FF);
-    drawPixel(20, 20, 0xFFFF00FF);
+
+    for (int i=0; i<N_POINTS; i++) {
+        vec2_t projectedPoint = projectedPoints[i];
+        drawRectFilled(projectedPoint.x, projectedPoint.y, 4, 4, 0xFFFFFF00);
+    }
 
     renderColorBuffer();
     clearColorBuffer(0xFFFF0000);
