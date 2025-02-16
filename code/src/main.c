@@ -9,7 +9,9 @@
 
 vec3_t cubePoints[N_POINTS];
 vec2_t projectedPoints[N_POINTS];
-float FOVFactor = 128;
+
+vec3_t cameraPos = { 0, 0, -5 };
+float FOVFactor = 640;
 
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
@@ -87,6 +89,8 @@ vec2_t project(vec3_t point) {
 void update() {
     for (int i = 0; i < N_POINTS; i++) {
         vec3_t point = cubePoints[i];
+
+        point.z -= cameraPos.z;
 
         vec2_t projectedPoint = project(point);
 
