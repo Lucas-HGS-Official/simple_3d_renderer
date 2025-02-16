@@ -77,8 +77,8 @@ void processInput(bool* isRunning) {
 
 vec2_t project(vec3_t point) {
     vec2_t projectedPoint = {
-        point.x * FOVFactor,
-        point.y * FOVFactor
+        (point.x * FOVFactor) / point.z,
+        (point.y * FOVFactor) / point.z
     };
 
     return projectedPoint;
@@ -95,7 +95,7 @@ void update() {
 }
 
 void render() {
-    drawGrid();
+    // drawGrid();
 
     for (int i=0; i<N_POINTS; i++) {
         vec2_t projectedPoint = projectedPoints[i];
@@ -107,7 +107,7 @@ void render() {
     }
 
     renderColorBuffer();
-    clearColorBuffer(0xFFFF0000);
+    clearColorBuffer(0xFF000000);
 
     SDL_RenderPresent(renderer);
 }
