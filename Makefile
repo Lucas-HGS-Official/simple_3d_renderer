@@ -6,7 +6,7 @@ OBJ = $(patsubst code/src/%.c, obj/%.o, $(SRC))
 build: clean $(TARGET)
 
 $(TARGET): $(OBJ)
-	gcc -o $@ $? -Wall -std=c99 -lSDL2
+	gcc -o $@ $? -Wall -std=c99 -lSDL2 -lm
 
 obj/%.o : code/src/%.c
 	gcc -c $< -o $@ -Icode/include
