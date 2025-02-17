@@ -10,6 +10,7 @@
 
 vec3_t cubePoints[N_POINTS];
 vec2_t projectedPoints[N_POINTS];
+vec3_t cubeRotation = { 0, 0, 0 };
 
 vec3_t cameraPos = { 0, 0, -5 };
 float FOVFactor = 640;
@@ -88,6 +89,7 @@ vec2_t project(vec3_t point) {
 }
 
 void update() {
+    cubeRotation.y += 0.1;
     for (int i = 0; i < N_POINTS; i++) {
         vec3_t point = cubePoints[i];
 
