@@ -81,21 +81,26 @@ void processInput(bool* isRunning) {
 
 vec2_t project(vec3_t point) {
     vec2_t projectedPoint = {
-        (point.x * FOVFactor) / point.z,
-        (point.y * FOVFactor) / point.z
+        .x = (FOVFactor * point.x) / point.z,
+        .y = (FOVFactor * point.y) / point.z
     };
-
     return projectedPoint;
 }
-
 void update() {
-    cubeRotation.y += 0.1;
+    cubeRotation.x += 0.005;
+    cubeRotation.y += 0.005;
+    cubeRotation.z += 0.005;
+
     for (int i = 0; i < N_POINTS; i++) {
         vec3_t point = cubePoints[i];
 
-        point.z -= cameraPos.z;
+        vec3_t transformedPoint = vec3RotateX(point, cubeRotation.x);
+        transformedPoint = vec3RotateY(transformedPoint, cubeRotation.y);
+        transformedPoint = vec3RotateZ(transformedPoint, cubeRotation.z);
 
-        vec2_t projectedPoint = project(point);
+        transformedPoint.z -= cameraPos.z;
+
+        vec2_t projectedPoint = project(transformedPoint);
 
         projectedPoints[i] = projectedPoint;
     }
