@@ -15,6 +15,8 @@ vec3_t cubeRotation = { 0, 0, 0 };
 vec3_t cameraPos = { 0, 0, -5 };
 float FOVFactor = 640;
 
+int previousFrameTime = 0;
+
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
 vec2_t project(vec3_t point);
@@ -87,6 +89,9 @@ vec2_t project(vec3_t point) {
     return projectedPoint;
 }
 void update() {
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), previousFrameTime + FRAME_TARGET_TIME));
+    previousFrameTime = SDL_GetTicks();
+
     cubeRotation.x += 0.005;
     cubeRotation.y += 0.005;
     cubeRotation.z += 0.005;
