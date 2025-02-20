@@ -5,6 +5,9 @@
 
 #include "display.h"
 #include "vector.h"
+#include "mesh.h"
+
+triangle_t trianglesToRender[NUM_MESH_FACES];
 
 vec3_t cubeRotation = { 0, 0, 0 };
 
@@ -86,32 +89,45 @@ void update() {
     cubeRotation.y += 0.005;
     cubeRotation.z += 0.005;
 
-    // for (int i = 0; i < N_POINTS; i++) {
-    //     vec3_t point = cubePoints[i];
+    for (int i = 0; i < NUM_MESH_FACES; i++) {
+        face_t meshFace = meshFaces[i];
 
-    //     vec3_t transformedPoint = vec3RotateX(point, cubeRotation.x);
-    //     transformedPoint = vec3RotateY(transformedPoint, cubeRotation.y);
-    //     transformedPoint = vec3RotateZ(transformedPoint, cubeRotation.z);
+        vec3_t faceVertices[3];
+        faceVertices[0] = meshVertices[meshFace.a - 1];
+        faceVertices[1] = meshVertices[meshFace.b - 1];
+        faceVertices[2] = meshVertices[meshFace.c - 1];
 
-    //     transformedPoint.z -= cameraPos.z;
+        triangle_t projectedTriangle;
 
-    //     vec2_t projectedPoint = project(transformedPoint);
+        for (int j = 0; j < 3; j++) {
+            vec3_t transformedVertex = faceVertices[j];
+            transformedVertex = vec3RotateX(transformedVertex, cubeRotation.x);
+            transformedVertex = vec3RotateY(transformedVertex, cubeRotation.y);
+            transformedVertex = vec3RotateZ(transformedVertex, cubeRotation.z);
 
-    //     projectedPoints[i] = projectedPoint;
-    // }
+            transformedVertex.z -= cameraPos.z;
+
+            vec2_t projectedPoint = project(transformedVertex);
+
+            projectedPoint.x += (windowWidth / 2);
+            projectedPoint.y += (windowHeight / 2);
+
+            projectedTriangle.points[j] = projectedPoint;
+        }
+
+        trianglesToRender[i] = projectedTriangle;
+    }
 }
 
 void render() {
     // drawGrid();
 
-    // for (int i=0; i<N_POINTS; i++) {
-    //     vec2_t projectedPoint = projectedPoints[i];
-    //     drawRectFilled(
-    //         projectedPoint.x + (windowWidth / 2),
-    //         projectedPoint.y + (windowHeight / 2),
-    //         4, 4,
-    //         0xFFFFFF00);
-    // }
+    for (int i=0; i<NUM_MESH_FACES; i++) {
+        triangle_t triangle = trianglesToRender[i];
+        drawRectFilled(triangle.points[0].x, triangle.points[0].y, 4, 4, 0xFFFFFF00);
+        drawRectFilled(triangle.points[1].x, triangle.points[1].y, 4, 4, 0xFFFFFF00);
+        drawRectFilled(triangle.points[2].x, triangle.points[2].y, 4, 4, 0xFFFFFF00);
+    }
 
     renderColorBuffer();
     clearColorBuffer(0xFF000000);
