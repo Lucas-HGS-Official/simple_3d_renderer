@@ -129,6 +129,8 @@ void render() {
         drawRectFilled(triangle.points[2].x, triangle.points[2].y, 4, 4, 0xFFFFFF00);
     }
 
+    drawLine(100, 200, 300, 50, 0xFF00FF00);
+
     renderColorBuffer();
     clearColorBuffer(0xFF000000);
 
