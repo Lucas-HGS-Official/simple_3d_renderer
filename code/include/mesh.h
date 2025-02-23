@@ -5,10 +5,17 @@
 
 #include "triangle.h"
 
-#define NUM_MESH_VERTICES 8
-#define NUM_MESH_FACES (6 * 2)
+#define NUM_CUBE_VERTICES 8
+#define NUM_CUBE_FACES (6 * 2)
 
-extern vec3_t meshVertices[NUM_MESH_VERTICES];
-extern face_t meshFaces[NUM_MESH_FACES];
+extern vec3_t cubeVertices[NUM_CUBE_VERTICES];
+extern face_t cubeFaces[NUM_CUBE_FACES];
+
+typedef struct {
+    vec3_t* vertices;
+    face_t* faces;
+} mesh_t;
+
+extern mesh_t mesh;
 
 #endif
