@@ -1,6 +1,16 @@
+#include <stdio.h>
+
+#include "array.h"
+
 #include "mesh.h"
 
-vec3_t CubeVertices[NUM_CUBE_VERTICES] = {
+mesh_t mesh = {
+    .vertices = NULL,
+    .faces = NULL,
+    .rotation = { 0, 0, 0 }
+};
+
+vec3_t cubeVertices[NUM_CUBE_VERTICES] = {
     { -1, -1, -1 }, // 1
     { -1,  1, -1 }, // 2
     {  1,  1, -1 }, // 3
@@ -31,3 +41,15 @@ face_t cubeFaces[NUM_CUBE_FACES] = {
     {6, 8, 1},
     {6, 1, 4}
 };
+
+void loadCubeMeshData(void) {
+    for (int i = 0; i < NUM_CUBE_VERTICES; i++) {
+        vec3_t cubeVertex = cubeVertices[i];
+        array_push(mesh.vertices, cubeVertex);
+    }
+
+    for (int i = 0; i < NUM_CUBE_FACES; i++) {
+        face_t cubeFace = cubeFaces[i];
+        array_push(mesh.faces, cubeFace);
+    }
+}

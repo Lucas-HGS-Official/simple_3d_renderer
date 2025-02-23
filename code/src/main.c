@@ -10,8 +10,6 @@
 
 triangle_t* trianglesToRender = NULL;
 
-vec3_t cubeRotation = { 0, 0, 0 };
-
 vec3_t cameraPos = { 0, 0, -5 };
 float FOVFactor = 640;
 
@@ -22,6 +20,7 @@ void processInput(bool* isRunning);
 vec2_t project(vec3_t point);
 void update(void);
 void render();
+void freeResources(void);
 
 int main(int argc, char const *argv[]) {
     bool isRunning = false;
@@ -37,6 +36,7 @@ int main(int argc, char const *argv[]) {
     }
 
     destroyWindow();
+    freeResources();
 
     return 0;
 }
@@ -51,6 +51,8 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
         windowWidth,
         windowHeight
     );
+
+    loadCubeMeshData();
 }
 
 void processInput(bool* isRunning) {
@@ -88,25 +90,26 @@ void update() {
     
     previousFrameTime = SDL_GetTicks();
 
-    cubeRotation.x += 0.005;
-    cubeRotation.y += 0.005;
-    cubeRotation.z += 0.005;
+    mesh.rotation.x += 0.005;
+    mesh.rotation.y += 0.005;
+    mesh.rotation.z += 0.005;
 
-    for (int i = 0; i < NUM_MESH_FACES; i++) {
-        face_t meshFace = meshFaces[i];
+    int numFaces = array_length(mesh.faces);
+    for (int i = 0; i < numFaces; i++) {
+        face_t meshFace = mesh.faces[i];
 
         vec3_t faceVertices[3];
-        faceVertices[0] = meshVertices[meshFace.a - 1];
-        faceVertices[1] = meshVertices[meshFace.b - 1];
-        faceVertices[2] = meshVertices[meshFace.c - 1];
+        faceVertices[0] = mesh.vertices[meshFace.a - 1];
+        faceVertices[1] = mesh.vertices[meshFace.b - 1];
+        faceVertices[2] = mesh.vertices[meshFace.c - 1];
 
         triangle_t projectedTriangle;
 
         for (int j = 0; j < 3; j++) {
             vec3_t transformedVertex = faceVertices[j];
-            transformedVertex = vec3RotateX(transformedVertex, cubeRotation.x);
-            transformedVertex = vec3RotateY(transformedVertex, cubeRotation.y);
-            transformedVertex = vec3RotateZ(transformedVertex, cubeRotation.z);
+            transformedVertex = vec3RotateX(transformedVertex, mesh.rotation.x);
+            transformedVertex = vec3RotateY(transformedVertex, mesh.rotation.y);
+            transformedVertex = vec3RotateZ(transformedVertex, mesh.rotation.z);
 
             transformedVertex.z -= cameraPos.z;
 
@@ -145,4 +148,10 @@ void render() {
     clearColorBuffer(0xFF000000);
 
     SDL_RenderPresent(renderer);
+}
+
+void freeResources(void) {
+    free(colorBuffer);
+    array_free(mesh.faces);
+    array_free(mesh.vertices);
 }
