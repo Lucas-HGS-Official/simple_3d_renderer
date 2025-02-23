@@ -124,8 +124,8 @@ void update() {
 
 void render() {
     // drawGrid();
-
-    for (int i=0; i<NUM_MESH_FACES; i++) {
+    int numFaces = array_length(trianglesToRender);
+    for (int i=0; i<numFaces; i++) {
         triangle_t triangle = trianglesToRender[i];
         drawRectFilled(triangle.points[0].x, triangle.points[0].y, 4, 4, 0xFFFFFF00);
         drawRectFilled(triangle.points[1].x, triangle.points[1].y, 4, 4, 0xFFFFFF00);
@@ -138,6 +138,8 @@ void render() {
             0xFF00FF00
         );
     }
+
+    array_free(trianglesToRender);
 
     renderColorBuffer();
     clearColorBuffer(0xFF000000);
