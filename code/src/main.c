@@ -3,11 +3,12 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
+#include "array.h"
 #include "display.h"
 #include "vector.h"
 #include "mesh.h"
 
-triangle_t trianglesToRender[NUM_MESH_FACES];
+triangle_t* trianglesToRender = NULL;
 
 vec3_t cubeRotation = { 0, 0, 0 };
 
@@ -82,6 +83,8 @@ void update() {
     if (timeToWait > 0 && timeToWait <= FRAME_TARGET_TIME) {
         SDL_Delay(timeToWait);
     }
+
+    trianglesToRender = NULL;
     
     previousFrameTime = SDL_GetTicks();
 
@@ -115,7 +118,7 @@ void update() {
             projectedTriangle.points[j] = projectedPoint;
         }
 
-        trianglesToRender[i] = projectedTriangle;
+        array_push(trianglesToRender, projectedTriangle);
     }
 }
 
