@@ -54,7 +54,6 @@ void loadCubeMeshData(void) {
     }
 }
 
-
 void loadObjFileData(char* filepath) {
-    
+
 }
