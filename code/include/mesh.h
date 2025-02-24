@@ -20,5 +20,6 @@ typedef struct {
 extern mesh_t mesh;
 
 void loadCubeMeshData(void);
+void loadObjFileData(char* filepath);
 
 #endif

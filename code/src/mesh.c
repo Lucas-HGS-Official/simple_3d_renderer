@@ -53,3 +53,8 @@ void loadCubeMeshData(void) {
         array_push(mesh.faces, cubeFace);
     }
 }
+
+
+void loadObjFileData(char* filepath) {
+    
+}
