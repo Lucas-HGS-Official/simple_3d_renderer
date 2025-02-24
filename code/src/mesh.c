@@ -55,5 +55,12 @@ void loadCubeMeshData(void) {
 }
 
 void loadObjFileData(char* filepath) {
+    FILE* file = NULL;
+    file = fopen(filepath, "r");
 
+    char line[512];
+
+    while (fgets(line, 512, file)) {
+        printf("LINE = %s", line);
+    }
 }
