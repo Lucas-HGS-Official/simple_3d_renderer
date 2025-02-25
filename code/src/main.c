@@ -52,8 +52,7 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
         windowHeight
     );
 
-    loadCubeMeshData();
-    loadObjFileData("./assets/cube/untitled.obj");
+    loadObjFileData("./assets/f22.obj");
 }
 
 void processInput(bool* isRunning) {

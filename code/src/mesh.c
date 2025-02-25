@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "array.h"
 
@@ -61,6 +62,29 @@ void loadObjFileData(char* filepath) {
     char line[512];
 
     while (fgets(line, 512, file)) {
-        printf("LINE = %s", line);
+        if (strncmp(line, "v ", 2) == 0) {
+            vec3_t vertex;
+            sscanf(line, "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);
+            array_push(mesh.vertices, vertex);
+        }
+        if (strncmp(line, "f ", 2) == 0) {
+            int vertexIndices[3];
+            int textureIndices[3];
+            int normalsIndices[3];
+            sscanf(
+                line, "f %d/%d/%d %d/%d/%d %d/%d/%d",
+                &vertexIndices[0], &textureIndices[0], &normalsIndices[0],
+                &vertexIndices[1], &textureIndices[1], &normalsIndices[1],
+                &vertexIndices[2], &textureIndices[2], &normalsIndices[2]
+            );
+
+            face_t face = {
+                .a = vertexIndices[0],
+                .b = vertexIndices[1],
+                .c = vertexIndices[2]
+            };
+
+            array_push(mesh.faces, face);
+        }
     }
 }
