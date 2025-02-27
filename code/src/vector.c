@@ -11,6 +11,10 @@ vec2_t vec2Addition(vec2_t v1, vec2_t v2) {
     return (vec2_t) { v1.x + v2.x, v1.y + v2.y };
 }
 
+vec2_t vec2Subtraction(vec2_t v1, vec2_t v2) {
+    return (vec2_t) { v1.x - v2.x, v1.y - v2.y };
+}
+
 
 float vec3Length(vec3_t v) {
     return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
@@ -18,6 +22,10 @@ float vec3Length(vec3_t v) {
 
 vec3_t vec3Addition(vec3_t v1, vec3_t v2){
     return (vec3_t) { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
+}
+
+vec3_t vec3Subtraction(vec3_t v1, vec3_t v2) {
+    return (vec3_t) { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
 }
 
 vec3_t vec3RotateX(vec3_t v, float angle) {

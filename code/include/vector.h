@@ -14,9 +14,11 @@ typedef struct {
 
 float vec2Length(vec2_t v);
 vec2_t vec2Addition(vec2_t v1, vec2_t v2);
+vec2_t vec2Subtraction(vec2_t v1, vec2_t v2);
 
 float vec3Length(vec3_t v);
 vec3_t vec3Addition(vec3_t v1, vec3_t v2);
+vec3_t vec3Subtraction(vec3_t v1, vec3_t v2);
 vec3_t vec3RotateX(vec3_t v, float angle);
 vec3_t vec3RotateY(vec3_t v, float angle);
 vec3_t vec3RotateZ(vec3_t v, float angle);
