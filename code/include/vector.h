@@ -21,6 +21,7 @@ float vec3Length(vec3_t v);
 vec3_t vec3Addition(vec3_t v1, vec3_t v2);
 vec3_t vec3Subtraction(vec3_t v1, vec3_t v2);
 vec3_t vec3Scalling(vec3_t v, float factor);
+vec3_t vec3CrossProduct(vec3_t v1, vec3_t v2);
 vec3_t vec3RotateX(vec3_t v, float angle);
 vec3_t vec3RotateY(vec3_t v, float angle);
 vec3_t vec3RotateZ(vec3_t v, float angle);

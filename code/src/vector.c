@@ -32,9 +32,16 @@ vec3_t vec3Subtraction(vec3_t v1, vec3_t v2) {
     return (vec3_t) { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
 }
 
-
 vec3_t vec3Scalling(vec3_t v, float factor) {
     return (vec3_t) { v.x*factor, v.y*factor, v.z*factor };
+}
+
+vec3_t vec3CrossProduct(vec3_t v1, vec3_t v2) {
+    return (vec3_t) {
+        .x = v1.y * v2.z - v1.z * v2.y,
+        .y = v1.z * v2.x - v1.x * v2.z,
+        .z = v1.x * v2.y - v1.y * v2.x
+    };
 }
 
 vec3_t vec3RotateX(vec3_t v, float angle) {
