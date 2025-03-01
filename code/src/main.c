@@ -10,7 +10,7 @@
 
 triangle_t* trianglesToRender = NULL;
 
-vec3_t cameraPos = { 0, 0, -5 };
+vec3_t cameraPos = { 0, 0, 0 };
 float FOVFactor = 640;
 
 int previousFrameTime = 0;
@@ -113,21 +113,36 @@ void update() {
             transformedVertex = vec3RotateY(transformedVertex, mesh.rotation.y);
             transformedVertex = vec3RotateZ(transformedVertex, mesh.rotation.z);
 
-            transformedVertex.z -= cameraPos.z;
+            transformedVertex.z += 5;
 
             transformedVertices[j] = transformedVertex;
         }
 
+        vec3_t vectorA = transformedVertices[0];
+        vec3_t vectorB = transformedVertices[1];
+        vec3_t vectorC = transformedVertices[2];
+
+        vec3_t vectorAB = vec3Subtraction(vectorB, vectorA);
+        vec3_t vectorAC = vec3Subtraction(vectorC, vectorA);
+
+        vec3_t faceNormal = vec3CrossProduct(vectorAB, vectorAC);
+
+        vec3_t cameraRay = vec3Subtraction(cameraPos, vectorA);
+
+        float dotNormalCamera = vec3DotProduct(cameraRay, faceNormal);
+
+        if (dotNormalCamera < 0) continue;
+
         for (int j = 0; j < 3; j++) {
-
+            
             vec2_t projectedPoint = project(transformedVertices[j]);
-
+            
             projectedPoint.x += (windowWidth / 2);
             projectedPoint.y += (windowHeight / 2);
-
+            
             projectedTriangle.points[j] = projectedPoint;
         }
-
+            
         array_push(trianglesToRender, projectedTriangle);
     }
 }
