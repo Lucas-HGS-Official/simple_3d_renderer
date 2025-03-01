@@ -19,7 +19,7 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
 vec2_t project(vec3_t point);
 void update(void);
-void render();
+void render(void);
 void freeResources(void);
 
 int main(int argc, char const *argv[]) {
@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
     while (isRunning) {
         processInput(&isRunning);
         update();
-        render(windowWidth, windowHeight, &renderer);
+        render();
     }
 
     destroyWindow();
@@ -105,6 +105,8 @@ void update() {
 
         triangle_t projectedTriangle;
 
+        vec3_t transformedVertices[3];
+
         for (int j = 0; j < 3; j++) {
             vec3_t transformedVertex = faceVertices[j];
             transformedVertex = vec3RotateX(transformedVertex, mesh.rotation.x);
@@ -113,7 +115,12 @@ void update() {
 
             transformedVertex.z -= cameraPos.z;
 
-            vec2_t projectedPoint = project(transformedVertex);
+            transformedVertices[j] = transformedVertex;
+        }
+
+        for (int j = 0; j < 3; j++) {
+
+            vec2_t projectedPoint = project(transformedVertices[j]);
 
             projectedPoint.x += (windowWidth / 2);
             projectedPoint.y += (windowHeight / 2);
