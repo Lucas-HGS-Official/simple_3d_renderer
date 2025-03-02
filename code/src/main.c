@@ -127,7 +127,7 @@ void update() {
 
         vec3_t faceNormal = vec3CrossProduct(vectorAB, vectorAC);
 
-        vec3_t normalizedFaceNormal = vec3Normalize(faceNormal);
+        vec3Normalize(&faceNormal);
 
         vec3_t cameraRay = vec3Subtraction(cameraPos, vectorA);
 
