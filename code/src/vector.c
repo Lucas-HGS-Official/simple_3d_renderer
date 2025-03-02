@@ -19,8 +19,16 @@ vec2_t vec2Scalling(vec2_t v, float factor) {
     return (vec2_t) { v.x*factor, v.y*factor };
 }
 
+vec2_t vec2Division(vec2_t v, float factor) {
+    return (vec2_t) { v.x/factor, v.y/factor };
+}
+
 float vec2DotProduct(vec2_t v1, vec2_t v2) {
     return v1.x*v2.x + v1.y*v2.y;
+}
+
+vec2_t vec2Normalize(vec2_t v) {
+    return vec2Division(v, vec2Length(v));
 }
 
 
@@ -40,6 +48,10 @@ vec3_t vec3Scalling(vec3_t v, float factor) {
     return (vec3_t) { v.x*factor, v.y*factor, v.z*factor };
 }
 
+vec3_t vec3Division(vec3_t v, float factor) {
+    return (vec3_t) { v.x/factor, v.y/factor, v.z/factor };
+}
+
 vec3_t vec3CrossProduct(vec3_t v1, vec3_t v2) {
     return (vec3_t) {
         .x = v1.y * v2.z - v1.z * v2.y,
@@ -50,6 +62,10 @@ vec3_t vec3CrossProduct(vec3_t v1, vec3_t v2) {
 
 float vec3DotProduct(vec3_t v1, vec3_t v2) {
     return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+}
+
+vec3_t vec3Normalize(vec3_t v) {
+    return vec3Division(v, vec3Length(v));
 }
 
 vec3_t vec3RotateX(vec3_t v, float angle) {
