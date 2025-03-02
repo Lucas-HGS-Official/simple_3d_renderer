@@ -28,7 +28,9 @@ float vec2DotProduct(vec2_t v1, vec2_t v2) {
 }
 
 void vec2Normalize(vec2_t* v) {
-    vec2Division(*v, vec2Length(*v));
+    float length = vec2Length(*v);
+    v->x /= length;
+    v->y /= length;
 }
 
 
@@ -65,7 +67,10 @@ float vec3DotProduct(vec3_t v1, vec3_t v2) {
 }
 
 void vec3Normalize(vec3_t* v) {
-    vec3Division(*v, vec3Length(*v));
+    float length = vec3Length(*v);
+    v->x /= length;
+    v->y /= length;
+    v->z /= length;
 }
 
 vec3_t vec3RotateX(vec3_t v, float angle) {
