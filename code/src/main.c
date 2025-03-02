@@ -123,7 +123,9 @@ void update() {
         vec3_t vectorC = transformedVertices[2];
 
         vec3_t vectorAB = vec3Subtraction(vectorB, vectorA);
+        vec3Normalize(&vectorAB);
         vec3_t vectorAC = vec3Subtraction(vectorC, vectorA);
+        vec3Normalize(&vectorAC);
 
         vec3_t faceNormal = vec3CrossProduct(vectorAB, vectorAC);
 
