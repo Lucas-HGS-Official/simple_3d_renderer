@@ -1,3 +1,5 @@
+#include "display.h"
+
 #include "triangle.h"
 
 void intSwapVertex(int* a, int* b) {
@@ -7,7 +9,17 @@ void intSwapVertex(int* a, int* b) {
 }
 
 fillFlatBottomTriangle(int x0, int y0, int x1, int y1, int mX, int mY, uint32_t color) {
+    float invSlope1 = (float)(x1 - x0) / (y1 - y0);
+    float invSlope2 = (float)(mX - x0) / (mY - y0);
 
+    float xStart = x0;
+    float xEnd = x0;
+
+    for (int y = 0; y <= mY; y++) {
+        drawLine(xStart, y, xEnd, y, color);
+        xStart += invSlope1;
+        xEnd += invSlope2;
+    }
 }
 fillFlatTopTriangle(int x1, int y1, int mX, int mY, int x2, int y2, uint32_t color) {
 
