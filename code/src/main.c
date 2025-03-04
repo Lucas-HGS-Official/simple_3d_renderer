@@ -160,7 +160,7 @@ void render() {
         drawRectFilled(triangle.points[1].x, triangle.points[1].y, 4, 4, 0xFFFFFF00);
         drawRectFilled(triangle.points[2].x, triangle.points[2].y, 4, 4, 0xFFFFFF00);
 
-        drawTriangle(
+        drawTriangleFilled(
             triangle.points[0].x, triangle.points[0].y,
             triangle.points[1].x, triangle.points[1].y,
             triangle.points[2].x, triangle.points[2].y,
