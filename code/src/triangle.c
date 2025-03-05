@@ -8,7 +8,7 @@ void intSwapVertex(int* a, int* b) {
     *b = temp;
 }
 
-fillFlatBottomTriangle(int x0, int y0, int x1, int y1, int mX, int mY, uint32_t color) {
+void fillFlatBottomTriangle(int x0, int y0, int x1, int y1, int mX, int mY, uint32_t color) {
     float invSlope1 = (float)(x1 - x0) / (y1 - y0);
     float invSlope2 = (float)(mX - x0) / (mY - y0);
 
@@ -21,7 +21,7 @@ fillFlatBottomTriangle(int x0, int y0, int x1, int y1, int mX, int mY, uint32_t 
         xEnd += invSlope2;
     }
 }
-fillFlatTopTriangle(int x1, int y1, int mX, int mY, int x2, int y2, uint32_t color) {
+void fillFlatTopTriangle(int x1, int y1, int mX, int mY, int x2, int y2, uint32_t color) {
     float invSlope1 = (float)(x2 - x1) / (y2 - y1);
     float invSlope2 = (float)(x2 - mX) / (y2 - mY);
 
@@ -37,16 +37,16 @@ fillFlatTopTriangle(int x1, int y1, int mX, int mY, int x2, int y2, uint32_t col
 
 void drawTriangleFilled(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color) {
     if (y0 > y1) {
-        swapVertex(&y0, &y1);
-        swapVertex(&x0, &x1);
+        intSwapVertex(&y0, &y1);
+        intSwapVertex(&x0, &x1);
     }
     if (y1 > y2) {
-        swapVertex(&y1, &y2);
-        swapVertex(&x1, &x2);
+        intSwapVertex(&y1, &y2);
+        intSwapVertex(&x1, &x2);
     }
     if (y0 > y1) {
-        swapVertex(&y0, &y1);
-        swapVertex(&x0, &x1);
+        intSwapVertex(&y0, &y1);
+        intSwapVertex(&x0, &x1);
     }
 
     int mY = y1;
