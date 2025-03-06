@@ -42,6 +42,9 @@ int main(int argc, char const *argv[]) {
 }
 
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
+    render_method = RENDER_WIRE;
+    cull_method = CULL_BACKFACE;
+
     colorBuffer = (uint32_t*) malloc(sizeof(uint32_t) * windowWidth * windowHeight);
 
     colorBufferTexture = SDL_CreateTexture(
@@ -66,6 +69,18 @@ void processInput(bool* isRunning) {
     case SDL_KEYDOWN:
         if (event.key.keysym.sym == SDLK_ESCAPE)
             *isRunning = false;
+        if (event.key.keysym.sym == SDLK_1)
+            render_method = RENDER_WIRE_VERTEX;
+        if (event.key.keysym.sym == SDLK_2)
+            render_method = RENDER_WIRE;
+        if (event.key.keysym.sym == SDLK_3)
+            render_method = RENDER_FILL_TRIANGLE;
+        if (event.key.keysym.sym == SDLK_4)
+            render_method RENDER_FILL_TRIANGLE_WIRE;
+        if (event.key.keysym.sym == SDLK_c)
+            cull_method = CULL_BACKFACE;
+        if (event.key.keysym.sym == SDLK_d)
+            cull_method = CULL_NONE;
         break;
     default:
         break;
@@ -118,24 +133,26 @@ void update() {
             transformedVertices[j] = transformedVertex;
         }
 
-        vec3_t vectorA = transformedVertices[0];
-        vec3_t vectorB = transformedVertices[1];
-        vec3_t vectorC = transformedVertices[2];
-
-        vec3_t vectorAB = vec3Subtraction(vectorB, vectorA);
-        vec3Normalize(&vectorAB);
-        vec3_t vectorAC = vec3Subtraction(vectorC, vectorA);
-        vec3Normalize(&vectorAC);
-
-        vec3_t faceNormal = vec3CrossProduct(vectorAB, vectorAC);
-
-        vec3Normalize(&faceNormal);
-
-        vec3_t cameraRay = vec3Subtraction(cameraPos, vectorA);
-
-        float dotNormalCamera = vec3DotProduct(cameraRay, faceNormal);
-
-        if (dotNormalCamera < 0) continue;
+        if (cull_method == CULL_BACKFACE) {
+            vec3_t vectorA = transformedVertices[0];
+            vec3_t vectorB = transformedVertices[1];
+            vec3_t vectorC = transformedVertices[2];
+    
+            vec3_t vectorAB = vec3Subtraction(vectorB, vectorA);
+            vec3Normalize(&vectorAB);
+            vec3_t vectorAC = vec3Subtraction(vectorC, vectorA);
+            vec3Normalize(&vectorAC);
+    
+            vec3_t faceNormal = vec3CrossProduct(vectorAB, vectorAC);
+    
+            vec3Normalize(&faceNormal);
+    
+            vec3_t cameraRay = vec3Subtraction(cameraPos, vectorA);
+    
+            float dotNormalCamera = vec3DotProduct(cameraRay, faceNormal);
+    
+            if (dotNormalCamera < 0) continue;
+        }
 
         for (int j = 0; j < 3; j++) {
             
@@ -156,22 +173,28 @@ void render() {
     int numFaces = array_length(trianglesToRender);
     for (int i=0; i<numFaces; i++) {
         triangle_t triangle = trianglesToRender[i];
-        drawRectFilled(triangle.points[0].x, triangle.points[0].y, 4, 4, 0xFFFFFF00);
-        drawRectFilled(triangle.points[1].x, triangle.points[1].y, 4, 4, 0xFFFFFF00);
-        drawRectFilled(triangle.points[2].x, triangle.points[2].y, 4, 4, 0xFFFFFF00);
 
-        drawTriangleFilled(
-            triangle.points[0].x, triangle.points[0].y,
-            triangle.points[1].x, triangle.points[1].y,
-            triangle.points[2].x, triangle.points[2].y,
-            0xFF444444
-        );
-        drawTriangle(
-            triangle.points[0].x, triangle.points[0].y,
-            triangle.points[1].x, triangle.points[1].y,
-            triangle.points[2].x, triangle.points[2].y,
-            0xFFFFFFFF
-        );
+        if (render_method == RENDER_FILL_TRIANGLE || render_method == RENDER_FILL_TRIANGLE_WIRE) {
+            drawTriangleFilled(
+                triangle.points[0].x, triangle.points[0].y,
+                triangle.points[1].x, triangle.points[1].y,
+                triangle.points[2].x, triangle.points[2].y,
+                0xFF444444
+            );
+        }
+        if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX) {
+            drawTriangle(
+                triangle.points[0].x, triangle.points[0].y,
+                triangle.points[1].x, triangle.points[1].y,
+                triangle.points[2].x, triangle.points[2].y,
+                0xFFFFFFFF
+            );
+        }
+        if (render_method == RENDER_WIRE_VERTEX) {           
+            drawRectFilled(triangle.points[0].x - 2, triangle.points[0].y - 2, 4, 4, 0xFFFF0000);
+            drawRectFilled(triangle.points[1].x - 2, triangle.points[1].y - 2, 4, 4, 0xFFFF0000);
+            drawRectFilled(triangle.points[2].x - 2, triangle.points[2].y - 2, 4, 4, 0xFFFF0000);
+        }
     }
 
     array_free(trianglesToRender);
