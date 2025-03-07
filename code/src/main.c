@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
+#include "settings.h"
 #include "array.h"
 #include "display.h"
 #include "vector.h"
@@ -76,7 +77,7 @@ void processInput(bool* isRunning) {
         if (event.key.keysym.sym == SDLK_3)
             render_method = RENDER_FILL_TRIANGLE;
         if (event.key.keysym.sym == SDLK_4)
-            render_method RENDER_FILL_TRIANGLE_WIRE;
+            render_method = RENDER_FILL_TRIANGLE_WIRE;
         if (event.key.keysym.sym == SDLK_c)
             cull_method = CULL_BACKFACE;
         if (event.key.keysym.sym == SDLK_d)
