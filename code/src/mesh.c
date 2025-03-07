@@ -24,23 +24,23 @@ vec3_t cubeVertices[NUM_CUBE_VERTICES] = {
 
 face_t cubeFaces[NUM_CUBE_FACES] = {
     // front
-    {1, 2, 3},
-    {1, 3, 4},
+    {1, 2, 3, .color = 0xFFFF0000},
+    {1, 3, 4, .color = 0xFFFF0000},
     // right
-    {4, 3, 5},
-    {4, 5, 6},
+    {4, 3, 5, .color = 0xFF00FF00},
+    {4, 5, 6, .color = 0xFF00FF00},
     // back
-    {6, 5, 7},
-    {6, 7, 8},
+    {6, 5, 7, .color = 0xFF0000FF},
+    {6, 7, 8, .color = 0xFF0000FF},
     // left
-    {8, 7, 2},
-    {8, 2, 1},
+    {8, 7, 2, .color = 0xFFFFFF00},
+    {8, 2, 1, .color = 0xFFFFFF00},
     // top
-    {2, 7, 5},
-    {2, 5, 3},
+    {2, 7, 5, .color = 0xFFFF00FF},
+    {2, 5, 3, .color = 0xFFFF00FF},
     // bottom
-    {6, 8, 1},
-    {6, 1, 4}
+    {6, 8, 1, .color = 0xFF00FFFF},
+    {6, 1, 4, .color = 0xFF00FFFF}
 };
 
 void loadCubeMeshData(void) {

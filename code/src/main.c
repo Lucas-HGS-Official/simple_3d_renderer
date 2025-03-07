@@ -56,7 +56,8 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
         windowHeight
     );
 
-    loadObjFileData("./assets/f22.obj");
+    //loadObjFileData("./assets/f22.obj");
+    loadCubeMeshData();
 }
 
 void processInput(bool* isRunning) {
@@ -119,8 +120,6 @@ void update() {
         faceVertices[1] = mesh.vertices[meshFace.b - 1];
         faceVertices[2] = mesh.vertices[meshFace.c - 1];
 
-        triangle_t projectedTriangle;
-
         vec3_t transformedVertices[3];
 
         for (int j = 0; j < 3; j++) {
@@ -155,15 +154,26 @@ void update() {
             if (dotNormalCamera < 0) continue;
         }
 
+        
+
+        vec2_t projectedPoints[3];
+
         for (int j = 0; j < 3; j++) {
             
-            vec2_t projectedPoint = project(transformedVertices[j]);
+            projectedPoints[j] = project(transformedVertices[j]);
             
-            projectedPoint.x += (windowWidth / 2);
-            projectedPoint.y += (windowHeight / 2);
-            
-            projectedTriangle.points[j] = projectedPoint;
+            projectedPoints[j].x += (windowWidth / 2);
+            projectedPoints[j].y += (windowHeight / 2);
         }
+
+        triangle_t projectedTriangle = {
+            .points = {
+                { projectedPoints[0].x, projectedPoints[0].y },
+                { projectedPoints[1].x, projectedPoints[1].y },
+                { projectedPoints[2].x, projectedPoints[2].y }
+            },
+            .color = meshFace.color
+        };
             
         array_push(trianglesToRender, projectedTriangle);
     }
@@ -180,7 +190,7 @@ void render() {
                 triangle.points[0].x, triangle.points[0].y,
                 triangle.points[1].x, triangle.points[1].y,
                 triangle.points[2].x, triangle.points[2].y,
-                0xFF444444
+                triangle.color
             );
         }
         if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE) {
