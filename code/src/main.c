@@ -183,7 +183,7 @@ void render() {
                 0xFF444444
             );
         }
-        if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX) {
+        if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE) {
             drawTriangle(
                 triangle.points[0].x, triangle.points[0].y,
                 triangle.points[1].x, triangle.points[1].y,
