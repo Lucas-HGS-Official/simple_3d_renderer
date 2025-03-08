@@ -12,7 +12,7 @@
 triangle_t* trianglesToRender = NULL;
 
 vec3_t cameraPos = { 0, 0, 0 };
-float FOVFactor = 640;
+float FOVFactor = 320;
 
 int previousFrameTime = 0;
 
@@ -96,6 +96,7 @@ vec2_t project(vec3_t point) {
     };
     return projectedPoint;
 }
+
 void update() {
     int timeToWait = FRAME_TARGET_TIME - (SDL_GetTicks() - previousFrameTime);
 
@@ -107,9 +108,9 @@ void update() {
     
     previousFrameTime = SDL_GetTicks();
 
-    mesh.rotation.x += 0.005;
-    mesh.rotation.y += 0.005;
-    mesh.rotation.z += 0.005;
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.01;
+    mesh.rotation.z += 0.01;
 
     int numFaces = array_length(mesh.faces);
     for (int i = 0; i < numFaces; i++) {
