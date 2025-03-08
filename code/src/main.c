@@ -180,7 +180,10 @@ void update() {
 }
 
 void render() {
+    SDL_RenderClear(renderer);
+
     // drawGrid();
+    
     int numFaces = array_length(trianglesToRender);
     for (int i=0; i<numFaces; i++) {
         triangle_t triangle = trianglesToRender[i];
