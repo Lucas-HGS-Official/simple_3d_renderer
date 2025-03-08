@@ -166,16 +166,30 @@ void update() {
             projectedPoints[j].y += (windowHeight / 2);
         }
 
+        float avgDepth = (transformedVertices[0].z + transformedVertices[1].z + transformedVertices[2].z) / 3;
+
         triangle_t projectedTriangle = {
             .points = {
                 { projectedPoints[0].x, projectedPoints[0].y },
                 { projectedPoints[1].x, projectedPoints[1].y },
                 { projectedPoints[2].x, projectedPoints[2].y }
             },
-            .color = meshFace.color
+            .color = meshFace.color,
+            .avgDepth = avgDepth
         };
             
         array_push(trianglesToRender, projectedTriangle);
+    }
+
+    int numTriangles = array_length(trianglesToRender);
+    for (int i = 0; i<numTriangles; i++) {
+        for (int j = 0; j<numTriangles; j++) {
+            if (trianglesToRender[i].avgDepth < trianglesToRender[j].avgDepth) {
+                triangle_t temp = trianglesToRender[i];
+                trianglesToRender[i] = trianglesToRender[j];
+                trianglesToRender[j] = temp;
+            }
+        }
     }
 }
 
@@ -183,7 +197,7 @@ void render() {
     SDL_RenderClear(renderer);
 
     // drawGrid();
-    
+
     int numFaces = array_length(trianglesToRender);
     for (int i=0; i<numFaces; i++) {
         triangle_t triangle = trianglesToRender[i];
