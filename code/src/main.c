@@ -125,10 +125,9 @@ void update() {
 
         for (int j = 0; j < 3; j++) {
             vec3_t transformedVertex = faceVertices[j];
-            transformedVertex = vec3RotateX(transformedVertex, mesh.rotation.x);
-            transformedVertex = vec3RotateY(transformedVertex, mesh.rotation.y);
-            transformedVertex = vec3RotateZ(transformedVertex, mesh.rotation.z);
-
+            
+            
+            
             transformedVertex.z += 5;
 
             transformedVertices[j] = transformedVertex;
