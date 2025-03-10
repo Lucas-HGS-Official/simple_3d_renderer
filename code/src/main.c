@@ -8,6 +8,7 @@
 #include "display.h"
 #include "vector.h"
 #include "mesh.h"
+#include "matrix.h"
 
 triangle_t* trianglesToRender = NULL;
 
@@ -112,6 +113,10 @@ void update() {
     mesh.rotation.y += 0.01;
     mesh.rotation.z += 0.01;
 
+    mesh.scale.x += 0.002;
+
+    mat4_t scaleMatrix = mat4MakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+
     int numFaces = array_length(mesh.faces);
     for (int i = 0; i < numFaces; i++) {
         face_t meshFace = mesh.faces[i];
@@ -121,22 +126,22 @@ void update() {
         faceVertices[1] = mesh.vertices[meshFace.b - 1];
         faceVertices[2] = mesh.vertices[meshFace.c - 1];
 
-        vec3_t transformedVertices[3];
+        vec4_t transformedVertices[3];
 
         for (int j = 0; j < 3; j++) {
-            vec3_t transformedVertex = faceVertices[j];
+            vec4_t transformedVertex = vec4FromVec3(faceVertices[j]);
             
-            
-            
+            transformedVertex = mat4MultVec4(scaleMatrix, transformedVertex);
+
             transformedVertex.z += 5;
 
             transformedVertices[j] = transformedVertex;
         }
 
         if (cull_method == CULL_BACKFACE) {
-            vec3_t vectorA = transformedVertices[0];
-            vec3_t vectorB = transformedVertices[1];
-            vec3_t vectorC = transformedVertices[2];
+            vec3_t vectorA = vec3FromVec4(transformedVertices[0]);
+            vec3_t vectorB = vec3FromVec4(transformedVertices[1]);
+            vec3_t vectorC = vec3FromVec4(transformedVertices[2]);
     
             vec3_t vectorAB = vec3Subtraction(vectorB, vectorA);
             vec3Normalize(&vectorAB);
@@ -160,7 +165,7 @@ void update() {
 
         for (int j = 0; j < 3; j++) {
             
-            projectedPoints[j] = project(transformedVertices[j]);
+            projectedPoints[j] = project(vec3FromVec4(transformedVertices[j]));
             
             projectedPoints[j].x += (windowWidth / 2);
             projectedPoints[j].y += (windowHeight / 2);
