@@ -6,5 +6,6 @@ typedef struct {
 } mat4_t;
 
 mat4_t mat4Identity(void);
+mat4_t mat4MakeScale(float sx, float sy, float sz);
 
 #endif

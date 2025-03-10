@@ -10,3 +10,13 @@ mat4_t mat4Identity() {
 
     return m;
 }
+
+mat4_t mat4MakeScale(float sx, float sy, float sz) {
+    mat4_t m = mat4Identity();
+    
+    m.m[0][0] = sx;
+    m.m[1][1] = sy;
+    m.m[2][2] = sz;
+
+    return m;
+}
