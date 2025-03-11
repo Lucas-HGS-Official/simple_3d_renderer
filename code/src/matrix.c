@@ -31,3 +31,12 @@ vec4_t mat4MultVec4(mat4_t m, vec4_t v) {
 
     return result;
 }
+
+mat4_t mat4MakeTranslation(float tx, float ty, float tz) {
+    mat4_t m = mat4Identity();
+    m.m[0][3] = tx;
+    m.m[1][3] = ty;
+    m.m[2][3] = tz;
+
+    return m;
+}
