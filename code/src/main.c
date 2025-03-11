@@ -114,6 +114,7 @@ void update() {
     mesh.rotation.z += 0.01;
 
     mesh.translation.x += 0.01;
+    mesh.translation.z = 5;
 
     mesh.scale.x += 0.002;
 
@@ -136,8 +137,6 @@ void update() {
             
             transformedVertex = mat4MultVec4(scaleMatrix, transformedVertex);
             transformedVertex = mat4MultVec4(translationMatrix, transformedVertex);
-
-            transformedVertex.z += 5;
 
             transformedVertices[j] = transformedVertex;
         }
