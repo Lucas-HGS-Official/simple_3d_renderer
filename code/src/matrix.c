@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "matrix.h"
 
 mat4_t mat4Identity() {
@@ -38,5 +40,44 @@ mat4_t mat4MakeTranslation(float tx, float ty, float tz) {
     m.m[1][3] = ty;
     m.m[2][3] = tz;
 
+    return m;
+}
+
+mat4_t mat4MakeRotationX(float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+
+    mat4_t m = mat4Identity();
+    m.m[1][1] = c;
+    m.m[1][2] = -s;
+    m.m[2][1] = s;
+    m.m[2][2] = c;
+
+    return m;
+}
+
+mat4_t mat4MakeRotationY(float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+
+    mat4_t m = mat4Identity();
+    m.m[0][0] = c;
+    m.m[0][2] = s;
+    m.m[2][0] = -s;
+    m.m[2][2] = c;
+    
+    return m;
+}
+
+mat4_t mat4MakeRotationZ(float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+
+    mat4_t m = mat4Identity();
+    m.m[0][0] = c;
+    m.m[0][1] = -s;
+    m.m[1][0] = s;
+    m.m[1][1] = c;
+    
     return m;
 }

@@ -116,10 +116,13 @@ void update() {
     mesh.translation.x += 0.01;
     mesh.translation.z = 5;
 
-    mesh.scale.x += 0.002;
+    // mesh.scale.x += 0.002;
 
     mat4_t scaleMatrix = mat4MakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
     mat4_t translationMatrix = mat4MakeTranslation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
+    mat4_t rotationMatrixX = mat4MakeRotationX(mesh.rotation.x);
+    mat4_t rotationMatrixY = mat4MakeRotationY(mesh.rotation.y);
+    mat4_t rotationMatrixZ = mat4MakeRotationZ(mesh.rotation.z);
 
     int numFaces = array_length(mesh.faces);
     for (int i = 0; i < numFaces; i++) {
@@ -136,6 +139,9 @@ void update() {
             vec4_t transformedVertex = vec4FromVec3(faceVertices[j]);
             
             transformedVertex = mat4MultVec4(scaleMatrix, transformedVertex);
+            transformedVertex = mat4MultVec4(rotationMatrixX, transformedVertex);
+            transformedVertex = mat4MultVec4(rotationMatrixY, transformedVertex);
+            transformedVertex = mat4MultVec4(rotationMatrixZ, transformedVertex);
             transformedVertex = mat4MultVec4(translationMatrix, transformedVertex);
 
             transformedVertices[j] = transformedVertex;
