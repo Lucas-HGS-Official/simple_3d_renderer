@@ -138,11 +138,15 @@ void update() {
         for (int j = 0; j < 3; j++) {
             vec4_t transformedVertex = vec4FromVec3(faceVertices[j]);
             
-            transformedVertex = mat4MultVec4(scaleMatrix, transformedVertex);
-            transformedVertex = mat4MultVec4(rotationMatrixX, transformedVertex);
-            transformedVertex = mat4MultVec4(rotationMatrixY, transformedVertex);
-            transformedVertex = mat4MultVec4(rotationMatrixZ, transformedVertex);
-            transformedVertex = mat4MultVec4(translationMatrix, transformedVertex);
+            mat4_t worldMatrix = mat4Identity();
+
+            worldMatrix = mat4MultMat4(scaleMatrix, worldMatrix);
+            worldMatrix = mat4MultMat4(rotationMatrixX, worldMatrix);
+            worldMatrix = mat4MultMat4(rotationMatrixY, worldMatrix);
+            worldMatrix = mat4MultMat4(rotationMatrixZ, worldMatrix);
+            worldMatrix = mat4MultMat4(translationMatrix, worldMatrix);
+
+            transformedVertex = mat4MultVec4(worldMatrix, transformedVertex);
 
             transformedVertices[j] = transformedVertex;
         }
