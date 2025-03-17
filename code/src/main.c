@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#include <math.h>
 
 #include "settings.h"
 #include "array.h"
@@ -13,13 +14,12 @@
 triangle_t* trianglesToRender = NULL;
 
 vec3_t cameraPos = { 0, 0, 0 };
-float FOVFactor = 320;
+mat4_t projMatrix;
 
 int previousFrameTime = 0;
 
 void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer);
 void processInput(bool* isRunning);
-vec2_t project(vec3_t point);
 void update(void);
 void render(void);
 void freeResources(void);
@@ -57,6 +57,10 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
         windowHeight
     );
 
+    float fov = 3.141592 / 3.0;
+    float aspect = (float)windowWidth / (float)windowHeight;
+    projMatrix = mat4MakePerspective(fov, aspect, 0.1, 100.0);
+
     //loadObjFileData("./assets/f22.obj");
     loadCubeMeshData();
 }
@@ -90,14 +94,6 @@ void processInput(bool* isRunning) {
     }
 }
 
-vec2_t project(vec3_t point) {
-    vec2_t projectedPoint = {
-        .x = (FOVFactor * point.x) / point.z,
-        .y = (FOVFactor * point.y) / point.z
-    };
-    return projectedPoint;
-}
-
 void update() {
     int timeToWait = FRAME_TARGET_TIME - (SDL_GetTicks() - previousFrameTime);
 
@@ -113,7 +109,7 @@ void update() {
     mesh.rotation.y += 0.01;
     mesh.rotation.z += 0.01;
 
-    mesh.translation.x += 0.01;
+    // mesh.translation.x += 0.01;
     mesh.translation.z = 5;
 
     // mesh.scale.x += 0.002;
@@ -174,14 +170,17 @@ void update() {
 
         
 
-        vec2_t projectedPoints[3];
+        vec4_t projectedPoints[3];
 
         for (int j = 0; j < 3; j++) {
             
-            projectedPoints[j] = project(vec3FromVec4(transformedVertices[j]));
-            
-            projectedPoints[j].x += (windowWidth / 2);
-            projectedPoints[j].y += (windowHeight / 2);
+            projectedPoints[j] = mat4MultVec4Project(projMatrix, transformedVertices[j]);
+
+            projectedPoints[j].x *= (windowWidth / 2.0);
+            projectedPoints[j].y *= (windowWidth / 2.0);
+
+            projectedPoints[j].x += (windowWidth / 2.0);
+            projectedPoints[j].y += (windowHeight / 2.0);
         }
 
         float avgDepth = (transformedVertices[0].z + transformedVertices[1].z + transformedVertices[2].z) / 3;
