@@ -62,8 +62,8 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
     float aspect = (float)windowWidth / (float)windowHeight;
     projMatrix = mat4MakePerspective(fov, aspect, 0.1, 100.0);
 
-    //loadObjFileData("./assets/f22.obj");
-    loadCubeMeshData();
+    loadObjFileData("./assets/f22.obj");
+    //loadCubeMeshData();
 }
 
 void processInput(bool* isRunning) {
