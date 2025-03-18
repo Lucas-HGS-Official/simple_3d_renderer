@@ -10,6 +10,7 @@
 #include "vector.h"
 #include "mesh.h"
 #include "matrix.h"
+#include "light.h"
 
 triangle_t* trianglesToRender = NULL;
 
@@ -110,7 +111,7 @@ void update() {
     mesh.rotation.z += 0.01;
 
     // mesh.translation.x += 0.01;
-    mesh.translation.z = 5;
+    mesh.translation.z = 10;
 
     // mesh.scale.x += 0.002;
 
@@ -147,24 +148,25 @@ void update() {
             transformedVertices[j] = transformedVertex;
         }
 
+    
+        vec3_t vectorA = vec3FromVec4(transformedVertices[0]);
+        vec3_t vectorB = vec3FromVec4(transformedVertices[1]);
+        vec3_t vectorC = vec3FromVec4(transformedVertices[2]);
+
+        vec3_t vectorAB = vec3Subtraction(vectorB, vectorA);
+        vec3Normalize(&vectorAB);
+        vec3_t vectorAC = vec3Subtraction(vectorC, vectorA);
+        vec3Normalize(&vectorAC);
+
+        vec3_t faceNormal = vec3CrossProduct(vectorAB, vectorAC);
+
+        vec3Normalize(&faceNormal);
+
+        vec3_t cameraRay = vec3Subtraction(cameraPos, vectorA);
+
+        float dotNormalCamera = vec3DotProduct(cameraRay, faceNormal);
+        
         if (cull_method == CULL_BACKFACE) {
-            vec3_t vectorA = vec3FromVec4(transformedVertices[0]);
-            vec3_t vectorB = vec3FromVec4(transformedVertices[1]);
-            vec3_t vectorC = vec3FromVec4(transformedVertices[2]);
-    
-            vec3_t vectorAB = vec3Subtraction(vectorB, vectorA);
-            vec3Normalize(&vectorAB);
-            vec3_t vectorAC = vec3Subtraction(vectorC, vectorA);
-            vec3Normalize(&vectorAC);
-    
-            vec3_t faceNormal = vec3CrossProduct(vectorAB, vectorAC);
-    
-            vec3Normalize(&faceNormal);
-    
-            vec3_t cameraRay = vec3Subtraction(cameraPos, vectorA);
-    
-            float dotNormalCamera = vec3DotProduct(cameraRay, faceNormal);
-    
             if (dotNormalCamera < 0) continue;
         }
 
@@ -185,13 +187,17 @@ void update() {
 
         float avgDepth = (transformedVertices[0].z + transformedVertices[1].z + transformedVertices[2].z) / 3;
 
+        float lightIntensityFactor = -vec3DotProduct(faceNormal, light.direction);
+
+        uint32_t triangleColor = lightApplyIntensity(meshFace.color, lightIntensityFactor);
+
         triangle_t projectedTriangle = {
             .points = {
                 { projectedPoints[0].x, projectedPoints[0].y },
                 { projectedPoints[1].x, projectedPoints[1].y },
                 { projectedPoints[2].x, projectedPoints[2].y }
             },
-            .color = meshFace.color,
+            .color = triangleColor,
             .avgDepth = avgDepth
         };
             
