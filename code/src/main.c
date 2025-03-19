@@ -60,7 +60,9 @@ void setup(int windowWidth, int windowHeight, SDL_Renderer** renderer) {
 
     float fov = 3.141592 / 3.0;
     float aspect = (float)windowWidth / (float)windowHeight;
-    projMatrix = mat4MakePerspective(fov, aspect, 0.1, 100.0);
+    float znear = 0.1;
+    float zfar = 100.0;
+    projMatrix = mat4MakePerspective(fov, aspect, znear, zfar);
 
     loadObjFileData("./assets/f22.obj");
     //loadCubeMeshData();
@@ -102,18 +104,14 @@ void update() {
         SDL_Delay(timeToWait);
     }
 
-    trianglesToRender = NULL;
-    
     previousFrameTime = SDL_GetTicks();
 
-    mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.01;
-    mesh.rotation.z += 0.01;
+    trianglesToRender = NULL;
 
-    // mesh.translation.x += 0.01;
-    mesh.translation.z = 10;
-
-    // mesh.scale.x += 0.002;
+    mesh.rotation.x += 0.005;
+    // mesh.rotation.y += 0.003;
+    // mesh.rotation.z += 0.004;
+    mesh.translation.z = 5.0;
 
     mat4_t scaleMatrix = mat4MakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
     mat4_t translationMatrix = mat4MakeTranslation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
@@ -138,9 +136,9 @@ void update() {
             mat4_t worldMatrix = mat4Identity();
 
             worldMatrix = mat4MultMat4(scaleMatrix, worldMatrix);
-            worldMatrix = mat4MultMat4(rotationMatrixX, worldMatrix);
-            worldMatrix = mat4MultMat4(rotationMatrixY, worldMatrix);
             worldMatrix = mat4MultMat4(rotationMatrixZ, worldMatrix);
+            worldMatrix = mat4MultMat4(rotationMatrixY, worldMatrix);
+            worldMatrix = mat4MultMat4(rotationMatrixX, worldMatrix);
             worldMatrix = mat4MultMat4(translationMatrix, worldMatrix);
 
             transformedVertex = mat4MultVec4(worldMatrix, transformedVertex);
@@ -154,17 +152,16 @@ void update() {
         vec3_t vectorC = vec3FromVec4(transformedVertices[2]);
 
         vec3_t vectorAB = vec3Subtraction(vectorB, vectorA);
-        vec3Normalize(&vectorAB);
         vec3_t vectorAC = vec3Subtraction(vectorC, vectorA);
+        vec3Normalize(&vectorAB);
         vec3Normalize(&vectorAC);
 
         vec3_t faceNormal = vec3CrossProduct(vectorAB, vectorAC);
-
         vec3Normalize(&faceNormal);
 
         vec3_t cameraRay = vec3Subtraction(cameraPos, vectorA);
 
-        float dotNormalCamera = vec3DotProduct(cameraRay, faceNormal);
+        float dotNormalCamera = vec3DotProduct(faceNormal, cameraRay);
         
         if (cull_method == CULL_BACKFACE) {
             if (dotNormalCamera < 0) continue;
