@@ -61,9 +61,9 @@ void loadObjFileData(char* filepath) {
     FILE* file = NULL;
     file = fopen(filepath, "r");
 
-    char line[512];
+    char line[1024];
 
-    while (fgets(line, 512, file)) {
+    while (fgets(line, 1024, file)) {
         if (strncmp(line, "v ", 2) == 0) {
             vec3_t vertex;
             sscanf(line, "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);

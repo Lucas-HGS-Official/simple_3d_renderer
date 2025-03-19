@@ -15,6 +15,12 @@ bool initializeWindow(void) {
         return false;
     }
 
+    // Set width and height of the SDL window with the max screen resolution
+    SDL_DisplayMode display_mode;
+    SDL_GetCurrentDisplayMode(0, &display_mode);
+    windowWidth = display_mode.w;
+    windowHeight = display_mode.h;
+
     window = SDL_CreateWindow(
         NULL,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -40,7 +46,7 @@ bool initializeWindow(void) {
 }
 
 void drawPixel(int x, int y, uint32_t color) {
-    if (x > 0 && x < windowWidth && y > 0 && y < windowHeight){
+    if (x >= 0 && x < windowWidth && y >= 0 && y < windowHeight){
         colorBuffer[(windowWidth * y) + x] = color;
     }
 }
@@ -55,6 +61,14 @@ void drawGrid(void) {
     }
 }
 
+void drawDottedGrid(void) {
+    for (int y = 0; y < windowHeight; y += 10) {
+        for (int x = 0; x < windowWidth; x += 10) {
+            colorBuffer[(windowWidth * y) + x] = 0xFF444444;
+        }
+    }
+}
+
 
 void drawRectFilled(int x, int y, int width, int height, uint32_t color) {
     for (int i = 0; i < width; i++) {
@@ -62,7 +76,6 @@ void drawRectFilled(int x, int y, int width, int height, uint32_t color) {
             int currentX = x+i;
             int currentY = y+j;
             drawPixel(currentX, currentY, color);
-            //colorBuffer[(windowWidth * currentY) + currentX] = color;
         }
     }
 }
@@ -86,18 +99,12 @@ void drawLine(int x0, int y0, int x1, int y1, uint32_t color) {
     }
 }
 
-void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color) {
-    drawLine(x0, y0, x1, y1, color);
-    drawLine(x1, y1, x2, y2, color);
-    drawLine(x2, y2, x0, y0, color);
-}
-
 void renderColorBuffer(void) {
     SDL_UpdateTexture(
         colorBufferTexture,
         NULL,
         colorBuffer,
-        (int) (windowWidth * sizeof(uint32_t))
+        (int)(windowWidth * sizeof(uint32_t))
     );
 
     SDL_RenderCopy(renderer, colorBufferTexture, NULL, NULL);

@@ -216,7 +216,7 @@ void update() {
 void render() {
     SDL_RenderClear(renderer);
 
-    // drawGrid();
+    drawDottedGrid();
 
     int numFaces = array_length(trianglesToRender);
     for (int i=0; i<numFaces; i++) {

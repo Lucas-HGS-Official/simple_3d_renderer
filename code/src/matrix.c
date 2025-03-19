@@ -41,7 +41,7 @@ vec4_t mat4MultVec4(mat4_t m, vec4_t v) {
     result.y = m.m[1][0] * v.x + m.m[1][1] * v.y + m.m[1][2] * v.z + m.m[1][3] * v.w;
     result.z = m.m[2][0] * v.x + m.m[2][1] * v.y + m.m[2][2] * v.z + m.m[2][3] * v.w;
     result.w = m.m[3][0] * v.x + m.m[3][1] * v.y + m.m[3][2] * v.z + m.m[3][3] * v.w;
-
+    
     return result;
 }
 
@@ -97,8 +97,8 @@ mat4_t mat4MakeRotationZ(float angle) {
 mat4_t mat4MakePerspective(float fov, float aspect, float znear, float zfar) {
     mat4_t m = {{{ 0 }}};
 
-    m.m[0][0] = aspect * (1/tan(fov/2));
-    m.m[1][1] = 1 / tan(fov/2);
+    m.m[0][0] = aspect * (1 / tan(fov / 2));
+    m.m[1][1] = 1 / tan(fov / 2);
     m.m[2][2] = zfar / (zfar - znear);
     m.m[2][3] = (-zfar * znear) / (zfar - znear);
     m.m[3][2] = 1.0;
