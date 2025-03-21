@@ -2,7 +2,6 @@
 #define LIGHT_H
 
 #include <stdint.h>
-
 #include "vector.h"
 
 typedef struct {
@@ -11,6 +10,6 @@ typedef struct {
 
 extern light_t light;
 
-uint32_t lightApplyIntensity(uint32_t originalColor, float percentageFactor);
+uint32_t light_apply_intensity(uint32_t original_color, float percentage_factor);
 
 #endif
