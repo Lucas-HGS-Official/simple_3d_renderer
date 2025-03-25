@@ -7,6 +7,12 @@ void int_swap(int* a, int* b) {
     *b = tmp;
 }
 
+void float_swap(float* a, float* b) {
+    float tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Draw a filled a triangle with a flat bottom
 ///////////////////////////////////////////////////////////////////////////////
@@ -160,4 +166,23 @@ void draw_textured_triangle(
     uint32_t* texture
 ) {
     
+    // We need to sort the vertices by y-coordinate ascending (y0 < y1 < y2)
+    if (y0 > y1) {
+        int_swap(&y0, &y1);
+        int_swap(&x0, &x1);
+        float_swap(&u0, &u1);
+        float_swap(&v0, &v1);
+    }
+    if (y1 > y2) {
+        int_swap(&y1, &y2);
+        int_swap(&x1, &x2);
+        float_swap(&u1, &u2);
+        float_swap(&v1, &v2);
+    }
+    if (y0 > y1) {
+        int_swap(&y0, &y1);
+        int_swap(&x0, &x1);
+        float_swap(&u0, &u1);
+        float_swap(&v0, &v1);
+    }
 }
