@@ -278,7 +278,7 @@ void render(void) {
                 triangle.points[0].x, triangle.points[0].y, triangle.textcoords[0].u, triangle.textcoords[0].v, // vertex A
                 triangle.points[1].x, triangle.points[1].y, triangle.textcoords[2].u, triangle.textcoords[2].v, // vertex B
                 triangle.points[2].x, triangle.points[2].y, triangle.textcoords[3].u, triangle.textcoords[3].v, // vertex C
-                
+                mesh_texture
             );
         }
 
