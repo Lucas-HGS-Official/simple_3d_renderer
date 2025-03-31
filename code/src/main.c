@@ -2,15 +2,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#include "settings.h"
 #include "array.h"
 #include "display.h"
 #include "vector.h"
 #include "matrix.h"
 #include "light.h"
-#include "mesh.h"
 #include "triangle.h"
 #include "texture.h"
-#include "settings.h"
+#include "mesh.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Array of triangles that should be rendered frame by frame
@@ -23,7 +23,7 @@ triangle_t* triangles_to_render = NULL;
 bool is_running = false;
 int previous_frame_time = 0;
 
-vec3_t camera_position = { .x = 0, .y = 0, .z = 0 };
+vec3_t camera_position = { 0, 0, 0 };
 mat4_t proj_matrix;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ mat4_t proj_matrix;
 ///////////////////////////////////////////////////////////////////////////////
 void setup(void) {
     // Initialize render mode and triangle culling method
-    render_method = RENDER_FILL_TRIANGLE;
+    render_method = RENDER_TEXTURE_WIRE;
     cull_method = CULL_BACKFACE;
 
     // Allocate the required memory in bytes to hold the color buffer
@@ -47,20 +47,18 @@ void setup(void) {
     );
 
     // Initialize the perspective projection matrix
-    float fov = 3.141592 / 3.0; // the same as 180/3, or 60deg
+    float fov = 3.14159 / 3.0; // the same as 180/3, or 60deg
     float aspect = (float)window_height / (float)window_width;
     float znear = 0.1;
     float zfar = 100.0;
     proj_matrix = mat4_make_perspective(fov, aspect, znear, zfar);
 
-    // Manually load the hardcoded texture data from the static array
-    mesh_texture = (int32_t*) REDBRICK_TEXTURE;
-    texture_width = 64;
-    texture_height = 64;
-
     // Loads the vertex and face values for the mesh data structure
     load_cube_mesh_data();
     // load_obj_file_data("./assets/f22.obj");
+
+    // Load the hardcoded texture array in the global mesh texture variable
+    mesh_texture = (uint32_t*) REDBRICK_TEXTURE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -114,9 +112,9 @@ void update(void) {
     triangles_to_render = NULL;
 
     // Change the mesh scale, rotation, and translation values per animation frame
-    mesh.rotation.x += 0.005;
-    // mesh.rotation.y += 0.003;
-    // mesh.rotation.z += 0.004;
+    mesh.rotation.x += 0.002;
+    mesh.rotation.y += 0.002;
+    mesh.rotation.z += 0.002;
     mesh.translation.z = 5.0;
 
     // Create scale, rotation, and translation matrices that will be used to multiply the mesh vertices
@@ -195,12 +193,12 @@ void update(void) {
             // Project the current vertex
             projected_points[j] = mat4_mul_vec4_project(proj_matrix, transformed_vertices[j]);
 
+            // Flip vertically since the y values of the 3D mesh grow bottom->up and in screen space y values grow top->down
+            projected_points[j].y *= -1;
+
             // Scale into the view
             projected_points[j].x *= (window_width / 2.0);
             projected_points[j].y *= (window_height / 2.0);
-
-            // Invert the y values to account for the flipped screen y  coordinates
-            projected_points[j].y *= -1;
 
             // Translate the projected points to the middle of the screen
             projected_points[j].x += (window_width / 2.0);
@@ -210,7 +208,7 @@ void update(void) {
         // Calculate the average depth for each face based on the vertices after transformation
         float avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3.0;
 
-        // Calculate the shade intensity based on how aliged is the face normal and the opposite of the light direction
+        // Calculate the shade intensity based on how aliged is the normal with the flipped light direction ray
         float light_intensity_factor = -vec3_dot(normal, light.direction);
 
         // Calculate the triangle color based on the light angle
@@ -220,9 +218,9 @@ void update(void) {
             .points = {
                 { projected_points[0].x, projected_points[0].y },
                 { projected_points[1].x, projected_points[1].y },
-                { projected_points[2].x, projected_points[2].y },
+                { projected_points[2].x, projected_points[2].y }
             },
-            .textcoords = {
+            .texcoords = {
                 { mesh_face.a_uv.u, mesh_face.a_uv.v },
                 { mesh_face.b_uv.u, mesh_face.b_uv.v },
                 { mesh_face.c_uv.u, mesh_face.c_uv.v }
@@ -275,9 +273,9 @@ void render(void) {
         // Draw textured triangle
         if (render_method == RENDER_TEXTURE || render_method == RENDER_TEXTURE_WIRE) {
             draw_textured_triangle(
-                triangle.points[0].x, triangle.points[0].y, triangle.textcoords[0].u, triangle.textcoords[0].v, // vertex A
-                triangle.points[1].x, triangle.points[1].y, triangle.textcoords[2].u, triangle.textcoords[2].v, // vertex B
-                triangle.points[2].x, triangle.points[2].y, triangle.textcoords[3].u, triangle.textcoords[3].v, // vertex C
+                triangle.points[0].x, triangle.points[0].y, triangle.texcoords[0].u, triangle.texcoords[0].v, // vertex A
+                triangle.points[1].x, triangle.points[1].y, triangle.texcoords[1].u, triangle.texcoords[1].v, // vertex B
+                triangle.points[2].x, triangle.points[2].y, triangle.texcoords[2].u, triangle.texcoords[2].v, // vertex C
                 mesh_texture
             );
         }
@@ -294,9 +292,9 @@ void render(void) {
 
         // Draw triangle vertex points
         if (render_method == RENDER_WIRE_VERTEX) {
-            draw_rect(triangle.points[0].x - 3, triangle.points[0].y - 3, 6, 6, 0xFFFF0000); // vertex A
-            draw_rect(triangle.points[1].x - 3, triangle.points[1].y - 3, 6, 6, 0xFFFF0000); // vertex B
-            draw_rect(triangle.points[2].x - 3, triangle.points[2].y - 3, 6, 6, 0xFFFF0000); // vertex C
+            draw_rect(triangle.points[0].x - 3, triangle.points[0].y - 3, 6, 6, 0xFF0000FF); // vertex A
+            draw_rect(triangle.points[1].x - 3, triangle.points[1].y - 3, 6, 6, 0xFF0000FF); // vertex B
+            draw_rect(triangle.points[2].x - 3, triangle.points[2].y - 3, 6, 6, 0xFF0000FF); // vertex C
         }
     }
 
