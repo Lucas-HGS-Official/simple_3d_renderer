@@ -41,7 +41,7 @@ void setup(void) {
     // Creating a SDL texture that is used to display the color buffer
     color_buffer_texture = SDL_CreateTexture(
         renderer,
-        SDL_PIXELFORMAT_ARGB8888,
+        SDL_PIXELFORMAT_RGBA32,
         SDL_TEXTUREACCESS_STREAMING,
         window_width,
         window_height
@@ -55,8 +55,8 @@ void setup(void) {
     proj_matrix = mat4_make_perspective(fov, aspect, znear, zfar);
 
     // Loads the vertex and face values for the mesh data structure
-    load_cube_mesh_data();
-    // load_obj_file_data("./assets/f22.obj");
+    // load_cube_mesh_data();
+    load_obj_file_data("./assets/cube.obj");
 
     // Load the texture information from an external PNG file
     load_png_texture_data("./assets/cube.png");
