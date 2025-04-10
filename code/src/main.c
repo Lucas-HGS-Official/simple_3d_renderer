@@ -35,8 +35,9 @@ void setup(void) {
     render_method = RENDER_TEXTURED_WIRE;
     cull_method = CULL_BACKFACE;
 
-    // Allocate the required memory in bytes to hold the color buffer
+    // Allocate the required memory in bytes to hold the color buffer and the z buffer
     color_buffer = (uint32_t*)malloc(sizeof(uint32_t) * window_width * window_height);
+    z_buffer = (float*)malloc(sizeof(float) * window_width * window_height);
 
     // Creating a SDL texture that is used to display the color buffer
     color_buffer_texture = SDL_CreateTexture(
@@ -56,10 +57,10 @@ void setup(void) {
 
     // Loads the vertex and face values for the mesh data structure
     // load_cube_mesh_data();
-    load_obj_file_data("./assets/cube.obj");
+    load_obj_file_data("./assets/crab.obj");
 
     // Load the texture information from an external PNG file
-    load_png_texture_data("./assets/cube.png");
+    load_png_texture_data("./assets/crab.png");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -305,6 +306,7 @@ void render(void) {
     render_color_buffer();
 
     clear_color_buffer(0xFF000000);
+    clear_z_buffer();
 
     SDL_RenderPresent(renderer);
 }
@@ -314,6 +316,7 @@ void render(void) {
 ///////////////////////////////////////////////////////////////////////////////
 void free_resources(void) {
     free(color_buffer);
+    free(z_buffer);
     upng_free(png_texture);
     array_free(mesh.faces);
     array_free(mesh.vertices);
