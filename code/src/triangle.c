@@ -207,14 +207,16 @@ void draw_texel(
     int tex_x = abs((int)(interpolated_u * texture_width)) % texture_width;
     int tex_y = abs((int)(interpolated_v * texture_height)) % texture_height;
 
+    // Adjust 1/w so the pixels that are closer to the camera have smaller values
     interpolated_reciprocal_w = 1.0 - interpolated_reciprocal_w;
 
     // Only draw the pixel if the depth value is less than the one previously stored in the z-buffer
-    if (interpolated_reciprocal_w < z_buffer[(texture_width * tex_y) + tex_x]) {
+    if (interpolated_reciprocal_w < z_buffer[(window_width * y) + x]) {
+        // Draw a pixel at position (x,y) with the color that comes from the mapped texture
         draw_pixel(x, y, texture[(texture_width * tex_y) + tex_x]);
 
         // Update the z-buffer value with the 1/w of this current pixel
-        z_buffer[(texture_width * tex_y) + tex_x] = interpolated_reciprocal_w;
+        z_buffer[(window_width * y) + x] = interpolated_reciprocal_w;
     }
 }
 
@@ -270,7 +272,7 @@ void draw_textured_triangle(
         float_swap(&v0, &v1);
     }
 
-    // Flip the V component to account for inverted UV coordinates (V grows downwards)
+    // Flip the V component to account for inverted UV-coordinates (V grows downwards)
     v0 = 1.0 - v0;
     v1 = 1.0 - v1;
     v2 = 1.0 - v2;

@@ -24,7 +24,7 @@ triangle_t* triangles_to_render = NULL;
 bool is_running = false;
 int previous_frame_time = 0;
 
-vec3_t camera_position = { .x = 0, .y = 0, .z = 0 };
+vec3_t camera_position = { 0, 0, 0 };
 mat4_t proj_matrix;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,10 +32,10 @@ mat4_t proj_matrix;
 ///////////////////////////////////////////////////////////////////////////////
 void setup(void) {
     // Initialize render mode and triangle culling method
-    render_method = RENDER_TEXTURED_WIRE;
+    render_method = RENDER_TEXTURED;
     cull_method = CULL_BACKFACE;
 
-    // Allocate the required memory in bytes to hold the color buffer and the z buffer
+    // Allocate the required memory in bytes to hold the color buffer and the z-buffer
     color_buffer = (uint32_t*)malloc(sizeof(uint32_t) * window_width * window_height);
     z_buffer = (float*)malloc(sizeof(float) * window_width * window_height);
 
@@ -49,7 +49,7 @@ void setup(void) {
     );
 
     // Initialize the perspective projection matrix
-    float fov = 3.14159 / 3.0; // the same as 180/3, or 60deg
+    float fov = M_PI / 3.0; // the same as 180/3, or 60deg
     float aspect = (float)window_height / (float)window_width;
     float znear = 0.1;
     float zfar = 100.0;
@@ -57,10 +57,10 @@ void setup(void) {
 
     // Loads the vertex and face values for the mesh data structure
     // load_cube_mesh_data();
-    load_obj_file_data("./assets/f22.obj");
+    load_obj_file_data("./assets/f117.obj");
 
     // Load the texture information from an external PNG file
-    load_png_texture_data("./assets/f22.png");
+    load_png_texture_data("./assets/f117.png");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -114,10 +114,10 @@ void update(void) {
     triangles_to_render = NULL;
 
     // Change the mesh scale, rotation, and translation values per animation frame
-    mesh.rotation.x += 0.000;
-    mesh.rotation.y += 0.003;
+    mesh.rotation.x += 0.006;
+    mesh.rotation.y += 0.000;
     mesh.rotation.z += 0.000;
-    mesh.translation.z = 5.0;
+    mesh.translation.z = 4.0;
 
     // Create scale, rotation, and translation matrices that will be used to multiply the mesh vertices
     mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
@@ -132,9 +132,9 @@ void update(void) {
         face_t mesh_face = mesh.faces[i];
 
         vec3_t face_vertices[3];
-        face_vertices[0] = mesh.vertices[mesh_face.a];
-        face_vertices[1] = mesh.vertices[mesh_face.b];
-        face_vertices[2] = mesh.vertices[mesh_face.c];
+        face_vertices[0] = mesh.vertices[mesh_face.a - 1];
+        face_vertices[1] = mesh.vertices[mesh_face.b - 1];
+        face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
         vec4_t transformed_vertices[3];
 
@@ -235,15 +235,17 @@ void update(void) {
         array_push(triangles_to_render, projected_triangle);
     }
 
-    // Sort the triangles to render by their avg_depth
-    int num_triangles = array_length(triangles_to_render);
-    for (int i = 0; i < num_triangles; i++) {
-        for (int j = i; j < num_triangles; j++) {
-            if (triangles_to_render[i].avg_depth < triangles_to_render[j].avg_depth) {
-                // Swap the triangles positions in the array
-                triangle_t temp = triangles_to_render[i];
-                triangles_to_render[i] = triangles_to_render[j];
-                triangles_to_render[j] = temp;
+    // Sort the triangles to render by their avg_depth to perform painters algorithm with filled polygons 
+    if (render_method == RENDER_FILL_TRIANGLE || render_method == RENDER_FILL_TRIANGLE_WIRE) {
+        int num_triangles = array_length(triangles_to_render);
+        for (int i = 0; i < num_triangles; i++) {
+            for (int j = i; j < num_triangles; j++) {
+                if (triangles_to_render[i].avg_depth < triangles_to_render[j].avg_depth) {
+                    // Swap the triangles positions in the array
+                    triangle_t temp = triangles_to_render[i];
+                    triangles_to_render[i] = triangles_to_render[j];
+                    triangles_to_render[j] = temp;
+                }
             }
         }
     }
@@ -294,9 +296,9 @@ void render(void) {
 
         // Draw triangle vertex points
         if (render_method == RENDER_WIRE_VERTEX) {
-            draw_rect(triangle.points[0].x - 3, triangle.points[0].y - 3, 6, 6, 0xFFFF0000); // vertex A
-            draw_rect(triangle.points[1].x - 3, triangle.points[1].y - 3, 6, 6, 0xFFFF0000); // vertex B
-            draw_rect(triangle.points[2].x - 3, triangle.points[2].y - 3, 6, 6, 0xFFFF0000); // vertex C
+            draw_rect(triangle.points[0].x - 3, triangle.points[0].y - 3, 6, 6, 0xFF0000FF); // vertex A
+            draw_rect(triangle.points[1].x - 3, triangle.points[1].y - 3, 6, 6, 0xFF0000FF); // vertex B
+            draw_rect(triangle.points[2].x - 3, triangle.points[2].y - 3, 6, 6, 0xFF0000FF); // vertex C
         }
     }
 
