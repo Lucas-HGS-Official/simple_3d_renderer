@@ -31,6 +31,7 @@ int num_triangles_to_render = 0;
 ///////////////////////////////////////////////////////////////////////////////
 mat4_t world_matrix;
 mat4_t proj_matrix;
+mat4_t view_matrix;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Setup function to initialize variables and game objects
@@ -123,6 +124,14 @@ void update(void) {
     mesh.rotation.z += 0.000;
     mesh.translation.z = 4.0;
 
+    // Change camera prosition
+    camera.position.x += 0.008;
+
+    // Create the view matrix
+    vec3_t target = { 0, 0, 10 };
+    vec3_t up_direction = { 0, 1, 0 };
+    view_matrix = mat4_look_at(camera.position, target, up_direction);
+
     // Create scale, rotation, and translation matrices that will be used to multiply the mesh vertices
     mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
     mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
@@ -158,6 +167,9 @@ void update(void) {
 
             // Multiply the world matrix by the original vector
             transformed_vertex = mat4_mul_vec4(world_matrix, transformed_vertex);
+
+            // Mulriply the view matrix by the vector to transform the scene to camera space
+            transformed_vertex = mat4_mul_vec4(view_matrix, transformed_vertex);
 
             // Save transformed vertex in the array of transformed vertices
             transformed_vertices[j] = transformed_vertex;
