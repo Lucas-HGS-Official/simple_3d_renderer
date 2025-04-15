@@ -18,6 +18,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 bool is_running = false;
 int previous_frame_time = 0;
+float delta_time = 0; 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Array to store triangles that should be rendered each frame
@@ -62,10 +63,10 @@ void setup(void) {
     proj_matrix = mat4_make_perspective(fov, aspect, znear, zfar);
 
     // Loads the vertex and face values for the mesh data structure
-    load_obj_file_data("./assets/efa.obj");
+    load_obj_file_data("./assets/f22.obj");
 
     // Load the texture information from an external PNG file
-    load_png_texture_data("./assets/efa.png");
+    load_png_texture_data("./assets/f22.png");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -113,22 +114,26 @@ void update(void) {
         SDL_Delay(time_to_wait);
     }
 
+    // Get a delta time factor converted to seconds to be used to update our game objects
+    delta_time = (SDL_GetTicks() - previous_frame_time) / 1000.0;
+
     previous_frame_time = SDL_GetTicks();
 
     // Initialize the counter of triangles to render for the current frame
     num_triangles_to_render = 0;
 
     // Change the mesh scale, rotation, and translation values per animation frame
-    mesh.rotation.x += 0.006;
-    mesh.rotation.y += 0.000;
-    mesh.rotation.z += 0.000;
-    mesh.translation.z = 4.0;
+    mesh.rotation.x += 0.6 * delta_time;
+    mesh.rotation.y += 0.0 * delta_time;
+    mesh.rotation.z += 0.0 * delta_time;
+    mesh.translation.z = 5.0;
 
-    // Change camera prosition
-    camera.position.x += 0.008;
+    // Change the camera position per animation frame
+    camera.position.x += 0.2 * delta_time;
+    camera.position.y += 0.4 * delta_time;
 
-    // Create the view matrix
-    vec3_t target = { 0, 0, 10 };
+    // Create the view matrix looking at a hardcoded target point
+    vec3_t target = { 0, 0, 5.0 };
     vec3_t up_direction = { 0, 1, 0 };
     view_matrix = mat4_look_at(camera.position, target, up_direction);
 
@@ -168,7 +173,7 @@ void update(void) {
             // Multiply the world matrix by the original vector
             transformed_vertex = mat4_mul_vec4(world_matrix, transformed_vertex);
 
-            // Mulriply the view matrix by the vector to transform the scene to camera space
+            // Multiply the view matrix by the vector to transform the scene to camera space
             transformed_vertex = mat4_mul_vec4(view_matrix, transformed_vertex);
 
             // Save transformed vertex in the array of transformed vertices
@@ -209,8 +214,15 @@ void update(void) {
 
         // Loop all three vertices to perform projection and conversion to screen space
         for (int j = 0; j < 3; j++) {
-            // Project the current vertex
-            projected_points[j] = mat4_mul_vec4_project(proj_matrix, transformed_vertices[j]);
+            // Project the current vertex using a perspective projection matrix
+            projected_points[j] = mat4_mul_vec4(proj_matrix, transformed_vertices[j]);
+
+            // Perform perspective divide
+            if (projected_points[j].w != 0) {
+                projected_points[j].x /= projected_points[j].w;
+                projected_points[j].y /= projected_points[j].w;
+                projected_points[j].z /= projected_points[j].w;
+            }
 
             // Flip vertically since the y values of the 3D mesh grow bottom->up and in screen space y values grow top->down
             projected_points[j].y *= -1;
