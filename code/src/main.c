@@ -8,10 +8,10 @@
 #include "vector.h"
 #include "matrix.h"
 #include "light.h"
+#include "camera.h"
 #include "triangle.h"
 #include "texture.h"
 #include "mesh.h"
-#include "camera.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Global variables for execution status and game loop
@@ -58,15 +58,15 @@ void setup(void) {
     // Initialize the perspective projection matrix
     float fov = 3.141592 / 3.0; // the same as 180/3, or 60deg
     float aspect = (float)window_height / (float)window_width;
-    float znear = 0.1;
-    float zfar = 100.0;
+    float znear = 1.0;
+    float zfar = 20.0;
     proj_matrix = mat4_make_perspective(fov, aspect, znear, zfar);
 
     // Loads the vertex and face values for the mesh data structure
-    load_obj_file_data("./assets/f22.obj");
+    load_obj_file_data("./assets/efa.obj");
 
     // Load the texture information from an external PNG file
-    load_png_texture_data("./assets/f22.png");
+    load_png_texture_data("./assets/efa.png");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,8 +96,24 @@ void process_input(void) {
                 render_method = RENDER_TEXTURED_WIRE;
             if (event.key.keysym.sym == SDLK_c)
                 cull_method = CULL_BACKFACE;
-            if (event.key.keysym.sym == SDLK_d)
+            if (event.key.keysym.sym == SDLK_x)
                 cull_method = CULL_NONE;
+            if (event.key.keysym.sym == SDLK_UP)
+                camera.position.y += 3.0 * delta_time;
+            if (event.key.keysym.sym == SDLK_DOWN)
+                camera.position.y -= 3.0 * delta_time;
+            if (event.key.keysym.sym == SDLK_a)
+                camera.yaw -= 1.0 * delta_time;
+            if (event.key.keysym.sym == SDLK_d)
+                camera.yaw += 1.0 * delta_time;
+            if (event.key.keysym.sym == SDLK_w) {
+                camera.forward_velocity = vec3_mul(camera.direction, 5.0 * delta_time); 
+                camera.position = vec3_add(camera.position, camera.forward_velocity);
+            }
+            if (event.key.keysym.sym == SDLK_s) {
+                camera.forward_velocity = vec3_mul(camera.direction, 5.0 * delta_time); 
+                camera.position = vec3_sub(camera.position, camera.forward_velocity);
+            }
             break;
     }
 }
@@ -123,18 +139,21 @@ void update(void) {
     num_triangles_to_render = 0;
 
     // Change the mesh scale, rotation, and translation values per animation frame
-    mesh.rotation.x += 0.6 * delta_time;
+    mesh.rotation.x += 0.0 * delta_time;
     mesh.rotation.y += 0.0 * delta_time;
     mesh.rotation.z += 0.0 * delta_time;
     mesh.translation.z = 5.0;
 
-    // Change the camera position per animation frame
-    camera.position.x += 0.2 * delta_time;
-    camera.position.y += 0.4 * delta_time;
+    // Initialize the target looking at the positive z-axis
+    vec3_t target = { 0, 0, 1 };
+    mat4_t camera_yaw_rotation = mat4_make_rotation_y(camera.yaw);
+    camera.direction = vec3_from_vec4(mat4_mul_vec4(camera_yaw_rotation, vec4_from_vec3(target)));
 
-    // Create the view matrix looking at a hardcoded target point
-    vec3_t target = { 0, 0, 5.0 };
+    // Offset the camera position in the direction where the camera is pointing at
+    target = vec3_add(camera.position, camera.direction);
     vec3_t up_direction = { 0, 1, 0 };
+    
+    // Create the view matrix
     view_matrix = mat4_look_at(camera.position, target, up_direction);
 
     // Create scale, rotation, and translation matrices that will be used to multiply the mesh vertices
