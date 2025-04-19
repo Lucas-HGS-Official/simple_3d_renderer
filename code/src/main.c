@@ -5,6 +5,7 @@
 #include "settings.h"
 #include "array.h"
 #include "display.h"
+#include "clipping.h"
 #include "vector.h"
 #include "matrix.h"
 #include "light.h"
@@ -39,7 +40,7 @@ mat4_t view_matrix;
 ///////////////////////////////////////////////////////////////////////////////
 void setup(void) {
     // Initialize render mode and triangle culling method
-    render_method = RENDER_TEXTURED;
+    render_method = RENDER_WIRE;
     cull_method = CULL_BACKFACE;
 
     // Allocate the required memory in bytes to hold the color buffer and the z-buffer
@@ -58,15 +59,18 @@ void setup(void) {
     // Initialize the perspective projection matrix
     float fov = 3.141592 / 3.0; // the same as 180/3, or 60deg
     float aspect = (float)window_height / (float)window_width;
-    float znear = 1.0;
-    float zfar = 20.0;
-    proj_matrix = mat4_make_perspective(fov, aspect, znear, zfar);
+    float z_near = 1.0;
+    float z_far = 20.0;
+    proj_matrix = mat4_make_perspective(fov, aspect, z_near, z_far);
+
+    // Initialize frustum planes with a point and a normal
+    init_frustum_planes(fov, z_near, z_far);
 
     // Loads the vertex and face values for the mesh data structure
-    load_obj_file_data("./assets/efa.obj");
+    load_obj_file_data("./assets/cube.obj");
 
     // Load the texture information from an external PNG file
-    load_png_texture_data("./assets/efa.png");
+    load_png_texture_data("./assets/cube.png");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
