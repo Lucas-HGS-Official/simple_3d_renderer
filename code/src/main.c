@@ -57,14 +57,16 @@ void setup(void) {
     );
 
     // Initialize the perspective projection matrix
-    float fov = 3.141592 / 3.0; // the same as 180/3, or 60deg
-    float aspect = (float)window_height / (float)window_width;
+    float aspect_y = (float)window_height / (float)window_width;
+    float aspect_x = (float)window_width / (float)window_height;
+    float fov_y = 3.141592 / 3.0; // the same as 180/3, or 60deg
+    float fov_x = atan(tan(fov_y / 2) * aspect_x) * 2;
     float z_near = 1.0;
     float z_far = 20.0;
-    proj_matrix = mat4_make_perspective(fov, aspect, z_near, z_far);
+    proj_matrix = mat4_make_perspective(fov_y, aspect_y, z_near, z_far);
 
     // Initialize frustum planes with a point and a normal
-    init_frustum_planes(fov, z_near, z_far);
+    init_frustum_planes(fov_x, fov_y, z_near, z_far);
 
     // Loads the vertex and face values for the mesh data structure
     load_obj_file_data("./assets/cube.obj");
@@ -143,9 +145,9 @@ void update(void) {
     num_triangles_to_render = 0;
 
     // Change the mesh scale, rotation, and translation values per animation frame
-    mesh.rotation.x += 0.1 * delta_time;
-    mesh.rotation.y += 0.2 * delta_time;
-    mesh.rotation.z += 0.3 * delta_time;
+    mesh.rotation.x += 0.0 * delta_time;
+    mesh.rotation.y += 0.0 * delta_time;
+    mesh.rotation.z += 0.0 * delta_time;
     mesh.translation.z = 5.0;
 
     // Initialize the target looking at the positive z-axis
