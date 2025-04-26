@@ -58,11 +58,8 @@ void setup(void) {
     // Initialize frustum planes with a point and a normal
     init_frustum_planes(fov_x, fov_y, z_near, z_far);
 
-    // Loads the vertex and face values for the mesh data structure
-    load_obj_file_data("./assets/f117.obj");
-
-    // Load the texture information from an external PNG file
-    load_png_texture_data("./assets/f117.png");
+    load_mesh("./assets/f22.obj", "./assets/f22.png", vec3_new(1, 1, 1), vec3_new(-3, 0, 0), vec3_new(0, 0, 0));
+    load_mesh("./assets/efa.obj", "./assets/efa.png", vec3_new(1, 1, 1), vec3_new(+3, 0, 0), vec3_new(0, 0, 0));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -3,13 +3,12 @@
 #include "array.h"
 #include "mesh.h"
 
-mesh_t mesh = {
-    .vertices = NULL,
-    .faces = NULL,
-    .rotation = { 0, 0, 0 },
-    .scale = { 1.0, 1.0, 1.0 },
-    .translation = { 0, 0, 0 }
-};
+static mesh_t meshes[MAX_NUM_MESHES];
+static int mesh_count = 0;
+
+void load_mesh(char* obj_filename, char* png_filename, vec3_t scale, vec3_t translation, vec3_t rotation) {
+    
+}
 
 void load_obj_file_data(char* filename) {
     FILE* file;
