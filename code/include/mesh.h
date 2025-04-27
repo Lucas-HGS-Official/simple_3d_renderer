@@ -20,6 +20,10 @@ typedef struct {
 } mesh_t;
 
 void load_mesh(char* obj_filename, char* png_filename, vec3_t scale, vec3_t translation, vec3_t rotation);
-void load_obj_file_data(char* filename);
+void load_mesh_obj_data(mesh_t* mesh, char* obj_filename);
+void load_mesh_png_data(mesh_t* mesh, char* png_filename);
+int get_num_meshes(void);
+mesh_t* get_mesh(int mesh_index);
+void free_meshes(void);
 
 #endif
